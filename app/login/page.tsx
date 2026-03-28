@@ -67,7 +67,6 @@ export default function LoginPage() {
                   <label className="block text-xs font-medium text-gray-400 mb-1 uppercase tracking-wider">First Name</label>
                   <input
                     type="text"
-                    required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     className="w-full h-11 px-3 bg-gray-900/80 text-white text-sm border border-gray-700/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50"
@@ -77,7 +76,6 @@ export default function LoginPage() {
                   <label className="block text-xs font-medium text-gray-400 mb-1 uppercase tracking-wider">Last Name</label>
                   <input
                     type="text"
-                    required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     className="w-full h-11 px-3 bg-gray-900/80 text-white text-sm border border-gray-700/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50"
@@ -93,7 +91,6 @@ export default function LoginPage() {
               </label>
               <input
                 type="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
@@ -108,7 +105,6 @@ export default function LoginPage() {
               </label>
               <input
                 type="password"
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
