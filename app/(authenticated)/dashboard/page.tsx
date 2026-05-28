@@ -3,105 +3,131 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { CheckSquare, Flame, Bookmark, Star, BrainCircuit, BookOpen } from "lucide-react";
+import { Clock3 } from "lucide-react";
 import Link from "next/link";
-import { getActiveCourse } from "@/lib/course-data";
 import { useProgress } from "@/lib/progress-context";
 import { useApp } from "@/lib/app-context";
+import { createClient } from "@/lib/supabase/client";
+import { getTopicById } from "@/lib/course-data";
+import { useEffect, useState } from "react";
+
+interface LeaderEntry { id: string; first_name: string | null; last_name: string | null; total_xp: number; }
 
 export default function DashboardPage() {
-  const activeCourse = getActiveCourse();
-  const { coursesCompleted, learningStreak, activeCourses, totalXp, overallProgress } = useProgress();
+  const { coursesCompleted, learningStreak, activeCourses, totalXp, overallProgress, continueTopic, totalStudySeconds, activityLog } = useProgress();
   const { name } = useApp();
-  const isStarted = overallProgress > 0;
+  const studyHours = Math.floor(totalStudySeconds / 3600);
+  const studyMinutes = Math.floor((totalStudySeconds % 3600) / 60);
+  const hasStarted = totalStudySeconds > 0 || overallProgress > 0;
+  const activeCourse = continueTopic;
+
+  const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
+  const [leaderLoading, setLeaderLoading] = useState(true);
+  const [leaderError, setLeaderError] = useState(false);
+  const [myRank, setMyRank] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data, error } = await supabase
+          .from("leaderboard")
+          .select("id, first_name, last_name, total_xp")
+          .limit(5);
+
+        if (!error && data) {
+          setLeaderboard(data as LeaderEntry[]);
+          if (user) {
+            const rank = data.findIndex((e: LeaderEntry) => e.id === user.id);
+            setMyRank(rank >= 0 ? rank + 1 : data.length + 1);
+          }
+        } else {
+          setLeaderError(true);
+        }
+      } catch {
+        setLeaderError(true);
+      } finally {
+        setLeaderLoading(false);
+      }
+    };
+    fetchLeaderboard();
+  }, []);
+
+  const statCards = [
+    { label: "Completed", value: coursesCompleted, sub: "courses finished", icon: "/icon-completed.png" },
+    { label: "Streak", value: `${learningStreak} ${learningStreak === 1 ? "Day" : "Days"}`, sub: "keep it going!", icon: "/icon-streak.png" },
+    { label: "In Progress", value: activeCourses, sub: "courses started", icon: "/icon-bookmark.png" },
+    { label: "Total XP", value: totalXp.toLocaleString(), sub: "experience points", icon: "/icon-star.png" },
+  ];
+
+  const activityLabels = {
+    started: "Started",
+    resumed: "Returned to",
+    completed: "Completed",
+  };
+
+  const recentActivity = activityLog.slice(0, 4).map((item) => {
+    const lesson = getTopicById(item.topicId);
+    return {
+      id: item.id,
+      label: activityLabels[item.type],
+      title: lesson?.topic.title || "A lesson",
+      moduleTitle: lesson?.module.title || "Course activity",
+      at: new Date(item.at).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+    };
+  });
 
   return (
-    <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full p-2">
+    <div className="flex flex-col gap-6 sm:gap-8 max-w-6xl mx-auto w-full p-0 sm:p-2">
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Hey {name}! 👋</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Hey {name}</h1>
         <p className="text-lg text-muted-foreground">Here&apos;s what&apos;s happening with your learning.</p>
       </div>
 
+      {/* Stat Cards */}
       <div className="grid gap-5 grid-cols-2 lg:grid-cols-4">
-        {/* Courses Completed */}
-        <Card className="bg-secondary/40 border-border/50 hover:bg-secondary/60 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
-            <CheckSquare className="h-5 w-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold">{coursesCompleted}</div>
-            <p className="text-sm text-muted-foreground mt-1">courses finished</p>
-          </CardContent>
-        </Card>
-        
-        {/* Learning Streak */}
-        <Card className="bg-secondary/40 border-border/50 hover:bg-secondary/60 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Streak</CardTitle>
-            <Flame className={`h-5 w-5 ${learningStreak > 0 ? "text-orange-400" : "text-muted-foreground"}`} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold">{learningStreak} {learningStreak === 1 ? "Day" : "Days"}</div>
-            <p className="text-sm text-muted-foreground mt-1">keep it going!</p>
-          </CardContent>
-        </Card>
-        
-        {/* Active Courses */}
-        <Card className="bg-secondary/40 border-border/50 hover:bg-secondary/60 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
-            <Bookmark className="h-5 w-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold">{activeCourses}</div>
-            <p className="text-sm text-muted-foreground mt-1">courses started</p>
-          </CardContent>
-        </Card>
-        
-        {/* Total XP */}
-        <Card className="bg-secondary/40 border-border/50 hover:bg-secondary/60 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total XP</CardTitle>
-            <Star className={`h-5 w-5 ${totalXp > 0 ? "text-yellow-400" : "text-muted-foreground"}`} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold">{totalXp.toLocaleString()}</div>
-            <p className="text-sm text-muted-foreground mt-1">experience points</p>
-          </CardContent>
-        </Card>
+        {statCards.map((s) => (
+          <Card key={s.label} className="bg-[#111827]/60 border-[#c9a84c]/20 hover:border-[#c9a84c]/40 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2 p-4 sm:p-6">
+              <CardTitle className="text-sm font-medium text-muted-foreground">{s.label}</CardTitle>
+              <img src={s.icon} alt={s.label} className="h-7 w-7 object-contain" />
+            </CardHeader>
+            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+              <div className="text-2xl sm:text-4xl font-bold">{s.value}</div>
+              <p className="text-sm text-muted-foreground mt-1">{s.sub}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Continue Learning */}
       <div className="space-y-4 mt-2">
         <h2 className="text-2xl font-bold tracking-tight">Continue Learning</h2>
-        
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a1128] via-[#051e2c] to-[#043343] border border-cyan-900/40 p-8 md:p-10 shadow-2xl">
-          {/* Decorative background */}
-          <div className="absolute top-0 right-0 bottom-0 w-1/2 overflow-hidden pointer-events-none opacity-80 mix-blend-screen">
-             <div className="absolute right-[-10%] top-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/20 via-transparent to-transparent" />
-             <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-30 text-cyan-400">
-                <BrainCircuit className="w-96 h-96" strokeWidth={0.5} />
-             </div>
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a0e1a] via-[#0e1525] to-[#111827] border border-[#c9a84c]/25 p-5 sm:p-8 md:p-10 shadow-2xl">
+          <div className="absolute top-0 right-0 bottom-0 w-1/2 overflow-hidden pointer-events-none opacity-60">
+            <div className="absolute right-[-10%] top-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_rgba(201,168,76,0.12),_transparent_60%)]" />
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-20">
+              <img src="/icon-brain.png" alt="" className="w-96 h-96 object-contain opacity-40" />
+            </div>
           </div>
-
           <div className="relative z-10 flex flex-col justify-center max-w-lg min-h-[160px] gap-6">
             <div>
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{activeCourse.title}</h3>
-              <p className="text-base md:text-lg text-cyan-50/80">
-                {activeCourse.moduleTitle}
-              </p>
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{activeCourse?.title || "Start your first lesson"}</h3>
+              <p className="text-base md:text-lg text-white/70">{activeCourse?.moduleTitle || "Your next lesson will appear here as soon as you begin."}</p>
             </div>
-            
-            <div className="flex items-center gap-4 max-w-sm">
-              <Progress value={overallProgress} className="h-3 flex-1 bg-black/40 [&>div]:bg-cyan-400" />
-              <span className="text-base font-semibold text-cyan-100">{overallProgress}%</span>
+            <div className="flex items-center gap-3 sm:gap-4 max-w-sm">
+              <Progress value={overallProgress} className="h-3 flex-1 bg-black/40 [&>div]:bg-[#c9a84c]" />
+              <span className="text-base font-semibold text-[#d4b95e]">{overallProgress}%</span>
             </div>
-
+            <div className="flex items-center gap-2 text-sm text-white/70">
+              <Clock3 className="w-4 h-4 text-[#c9a84c]" />
+              <span>{studyHours > 0 ? `${studyHours}h ` : ""}{studyMinutes}m of study saved</span>
+            </div>
             <div className="mt-2">
-              <Link href={`/learn/${activeCourse.id}`} passHref legacyBehavior>
-                <Button className="bg-cyan-400 hover:bg-cyan-300 text-black font-bold text-base px-10 py-6 rounded-xl hover:scale-105 transition-transform shadow-lg">
-                  {isStarted ? "Resume Learning →" : "Start Course →"}
+              <Link href={`/learn/${activeCourse?.id || "topic-1"}`} passHref legacyBehavior>
+                <Button className="w-full sm:w-auto bg-[#c9a84c] hover:bg-[#d4b95e] text-[#0a0e1a] font-bold text-base px-10 py-6 rounded-xl hover:scale-105 transition-transform shadow-lg">
+                  {hasStarted ? "Resume Learning →" : "Start Course →"}
                 </Button>
               </Link>
             </div>
@@ -109,98 +135,112 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* TWO COLUMN LAYOUT FOR SCROLLING RICH CONTENT */}
+      {/* Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6 pb-12">
-        
-        {/* Left Column (Main App Shortcuts and Recents) */}
         <div className="lg:col-span-2 space-y-8">
-          
-          {/* Quick Shortcuts to Study Space */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold tracking-tight text-white flex items-center justify-between">
-              Your Study Space <Link href="/study-space" className="text-cyan-400 text-sm font-semibold hover:underline">Open All →</Link>
+              Your Study Space <Link href="/study-space" className="text-[#c9a84c] text-sm font-semibold hover:underline">Open All →</Link>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Link href="/study-space" className="bg-gradient-to-br from-indigo-900/40 to-black/40 border border-indigo-500/30 p-5 rounded-2xl hover:border-indigo-400/60 transition-all hover:scale-[1.02] shadow-[0_5px_15px_rgba(79,70,229,0.1)] group">
-                <div className="bg-indigo-500/20 text-indigo-400 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                  <BookOpen className="w-6 h-6" />
-                </div>
-                <h3 className="font-bold text-lg text-white mb-1">My Jotter</h3>
-                <p className="text-xs text-slate-400">Write fast notes.</p>
-              </Link>
-              <Link href="/study-space" className="bg-gradient-to-br from-cyan-900/40 to-black/40 border border-cyan-500/30 p-5 rounded-2xl hover:border-cyan-400/60 transition-all hover:scale-[1.02] shadow-[0_5px_15px_rgba(6,182,212,0.1)] group">
-                <div className="bg-cyan-500/20 text-cyan-400 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-cyan-500 group-hover:text-black transition-colors">
-                  <Bookmark className="w-6 h-6" />
-                </div>
-                <h3 className="font-bold text-lg text-white mb-1">Materials</h3>
-                <p className="text-xs text-slate-400">Saved PDFs & Links.</p>
-              </Link>
-              <Link href="/study-space" className="bg-gradient-to-br from-teal-900/40 to-black/40 border border-teal-500/30 p-5 rounded-2xl hover:border-teal-400/60 transition-all hover:scale-[1.02] shadow-[0_5px_15px_rgba(20,184,166,0.1)] group">
-                <div className="bg-teal-500/20 text-teal-400 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-teal-500 group-hover:text-white transition-colors">
-                  <BrainCircuit className="w-6 h-6" />
-                </div>
-                <h3 className="font-bold text-lg text-white mb-1">AI Helper</h3>
-                <p className="text-xs text-slate-400">Ask simple questions.</p>
-              </Link>
-            </div>
-          </section>
-
-          {/* Daily Motivation Box */}
-          <section className="bg-black/60 border border-border/50 rounded-2xl overflow-hidden shadow-2xl relative p-8">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 blur-[50px] rounded-full pointer-events-none"></div>
-            <div className="flex gap-6 items-center">
-              <div className="flex-shrink-0 w-16 h-16 rounded-full bg-secondary/80 flex items-center justify-center text-yellow-400 border border-yellow-500/30">
-                <Flame className="w-8 h-8 filter drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2 ">Quote of the Day</h3>
-                <p className="text-gray-300 italic text-lg line-clamp-2">
-                  "No matter how hard it is right now, the only way to fail is if you stop trying. Read one more page today."
-                </p>
-              </div>
-            </div>
-          </section>
-
-        </div>
-
-        {/* Right Column (Community & Leaderboard) */}
-        <div className="space-y-8">
-          
-          {/* Top Learners Leaderboard */}
-          <section className="bg-secondary/20 border border-border/40 rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
-            <div className="p-5 border-b border-border/30 bg-black/20 flex justify-between items-center">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-500" /> Top Learners
-              </h2>
-              <span className="text-xs font-semibold text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">THIS WEEK</span>
-            </div>
-            
-            <div className="flex-1 p-2 space-y-1">
               {[
-                { name: "Chidi N.", xp: 3200, rank: 1, color: "text-amber-300", bg: "bg-amber-500/10" },
-                { name: "Aisha M.", xp: 2850, rank: 2, color: "text-slate-300", bg: "bg-slate-500/10" },
-                { name: "Tobi O.", xp: 2100, rank: 3, color: "text-amber-700", bg: "bg-amber-900/20" },
-                { name: "You", xp: totalXp, rank: 14, color: "text-cyan-400", bg: "bg-cyan-500/10 border border-cyan-500/30" },
-                { name: "Nneka E.", xp: 500, rank: 15, color: "text-gray-400", bg: "bg-transparent" },
-              ].map((user, i) => (
-                <div key={i} className={`flex items-center justify-between p-4 rounded-xl ${user.bg}`}>
-                  <div className="flex items-center gap-4">
-                    <div className={`font-bold w-6 text-center ${user.color}`}>#{user.rank}</div>
-                    <div className="w-10 h-10 rounded-full bg-secondary/80 flex items-center justify-center font-bold text-[13px]">
-                      {user.name.charAt(0)}
-                    </div>
-                    <span className="font-semibold text-sm">{user.name}</span>
+                { href: "/study-space", label: "My Jotter", desc: "Write fast notes.", icon: "/icon-book.png", from: "from-[#1a1530]" },
+                { href: "/study-space", label: "Materials", desc: "Saved PDFs & Links.", icon: "/icon-bookmark.png", from: "from-[#151a30]" },
+                { href: "/study-space", label: "AI Helper", desc: "Ask simple questions.", icon: "/icon-brain.png", from: "from-[#101a25]" },
+              ].map((item) => (
+                <Link key={item.label} href={item.href} className={`bg-gradient-to-br ${item.from} to-black/40 border border-[#c9a84c]/20 hover:border-[#c9a84c]/50 p-5 rounded-2xl transition-all hover:scale-[1.02] shadow-[0_5px_15px_rgba(201,168,76,0.05)] group`}>
+                  <div className="w-12 h-12 rounded-xl overflow-hidden mb-4">
+                    <img src={item.icon} alt={item.label} className="w-full h-full object-cover" />
                   </div>
-                  <span className="text-sm font-bold text-cyan-400">{user.xp.toLocaleString()} XP</span>
-                </div>
+                  <h3 className="font-bold text-lg text-white mb-1">{item.label}</h3>
+                  <p className="text-xs text-slate-400">{item.desc}</p>
+                </Link>
               ))}
             </div>
           </section>
 
+          <section className="bg-black/60 border border-[#c9a84c]/15 rounded-2xl overflow-hidden shadow-2xl relative p-5 sm:p-8">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/10 blur-[50px] rounded-full pointer-events-none" />
+            <div className="relative">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">Recent Learning Activity</h3>
+                <p className="text-sm text-muted-foreground">This only shows real actions from your account.</p>
+              </div>
+
+              <div className="mt-5 space-y-3">
+                {recentActivity.length > 0 ? (
+                  recentActivity.map((item) => (
+                    <div key={item.id} className="flex flex-col gap-1 rounded-xl border border-[#c9a84c]/10 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-white">{item.label} {item.title}</p>
+                        <p className="text-xs text-muted-foreground">{item.moduleTitle}</p>
+                      </div>
+                      <span className="text-xs font-semibold text-[#c9a84c]">{item.at}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-xl border border-dashed border-[#c9a84c]/20 bg-[#c9a84c]/5 p-5 text-sm text-muted-foreground">
+                    Your first lesson action will appear here after you start learning.
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
         </div>
 
+        {/* Leaderboard */}
+        <div className="space-y-8">
+          <section className="bg-[#111827]/60 border border-[#c9a84c]/15 rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
+            <div className="p-5 border-b border-[#1f2b3e] bg-black/20 flex justify-between items-center">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <img src="/icon-star.png" alt="Leaderboard" className="w-6 h-6 object-contain" /> Top Learners
+              </h2>
+              <span className="text-xs font-semibold text-[#c9a84c] bg-[#c9a84c]/10 px-2 py-1 rounded">ALL TIME</span>
+            </div>
+            <div className="flex-1 p-2 space-y-1">
+              {leaderLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="h-4 w-6 bg-secondary/50 rounded animate-pulse" />
+                      <div className="w-10 h-10 rounded-full bg-secondary/50 animate-pulse" />
+                      <div className="h-4 w-20 bg-secondary/50 rounded animate-pulse" />
+                    </div>
+                    <div className="h-4 w-16 bg-secondary/30 rounded animate-pulse" />
+                  </div>
+                ))
+              ) : leaderError ? (
+                <div className="p-6 text-center text-sm text-muted-foreground">
+                  <img src="/icon-star.png" alt="" className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  Leaderboard is being prepared. It will show real learner progress once setup is complete.
+                </div>
+              ) : leaderboard.length > 0 ? (
+                leaderboard.map((entry, i) => {
+                  const rankColors = ["text-[#d4b95e]", "text-slate-300", "text-[#a8893a]"];
+                  const isMe = myRank === i + 1;
+                  return (
+                    <div key={entry.id} className={`flex items-center justify-between p-4 rounded-xl ${isMe ? "bg-[#c9a84c]/10 border border-[#c9a84c]/30" : ""}`}>
+                      <div className="flex items-center gap-4">
+                        <div className={`font-bold w-6 text-center ${rankColors[i] || "text-gray-400"}`}>#{i + 1}</div>
+                        <div className="w-10 h-10 rounded-full bg-secondary/80 flex items-center justify-center font-bold text-[13px]">
+                          {(entry.first_name || "?").charAt(0)}
+                        </div>
+                        <span className="font-semibold text-sm">{isMe ? "You" : `${entry.first_name || ""} ${(entry.last_name || "").charAt(0)}.`}</span>
+                      </div>
+                      <span className="text-sm font-bold text-[#c9a84c]">{(entry.total_xp || 0).toLocaleString()} XP</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="p-6 text-center text-sm text-muted-foreground">
+                  <img src="/icon-star.png" alt="" className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  Complete your first lesson to appear on the leaderboard!
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
-
     </div>
   );
 }

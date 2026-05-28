@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Zap, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
-  { title: "Features", href: "#features" },
-  { title: "Courses", href: "#courses" },
-  { title: "Pricing", href: "#pricing" },
+  { title: "Features", href: "/#features" },
+  { title: "Courses", href: "/#courses" },
+  { title: "Support", href: "/support" },
+  { title: "Terms", href: "/terms" },
+  { title: "Privacy", href: "/privacy" },
 ];
 
 export function MarketingNav() {
@@ -19,8 +21,12 @@ export function MarketingNav() {
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <div className="flex h-16 w-64 shrink-0 items-center justify-start group">
-            <img src="/logo.png" alt="Thumbnail Learning" className="h-full w-full object-contain object-left invert hue-rotate-180 mix-blend-screen filter group-hover:brightness-125 transition-all duration-500" />
+          <div className="group flex h-16 w-48 shrink-0 items-center justify-start gap-3">
+            <img src="/aethel-logo.png" alt="Aethel Solutions" className="h-12 w-12 object-contain transition-all duration-500 group-hover:brightness-125" />
+            <div className="leading-none">
+              <p className="text-lg font-black tracking-[0.14em] text-[#c9a84c]">Aethel</p>
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.32em] text-[#c9a84c]/70">Solutions</p>
+            </div>
           </div>
         </Link>
 
@@ -39,10 +45,10 @@ export function MarketingNav() {
 
         {/* CTA */}
         <div className="hidden items-center gap-3 md:flex">
-          <Link href="/dashboard" passHref legacyBehavior>
+          <Link href="/login" passHref legacyBehavior>
             <Button variant="ghost" size="sm">Sign In</Button>
           </Link>
-          <Link href="/dashboard" passHref legacyBehavior>
+          <Link href="/login" passHref legacyBehavior>
             <Button size="sm" className="glow-cyan">Get Started Free</Button>
           </Link>
         </div>
@@ -72,10 +78,10 @@ export function MarketingNav() {
               </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2">
-              <Link href="/dashboard" passHref legacyBehavior>
+              <Link href="/login" passHref legacyBehavior>
                 <Button variant="ghost" size="sm">Sign In</Button>
               </Link>
-              <Link href="/dashboard" passHref legacyBehavior>
+              <Link href="/login" passHref legacyBehavior>
                 <Button size="sm" className="glow-cyan">Get Started Free</Button>
               </Link>
             </div>

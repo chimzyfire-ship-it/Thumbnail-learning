@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { CheckCircle2, PlayCircle, FileText, Clock, BookOpen, MonitorPlay, Sparkles, List } from "lucide-react";
+import { CheckCircle2, PlayCircle, FileText, Clock, BookOpen, MonitorPlay, Sparkles, List, Trophy, X } from "lucide-react";
 import type { Lesson } from "@/lib/db";
-import { useProgress } from "@/lib/progress-context";
+import { MIN_PAGE_SECONDS, MIN_VIDEO_SECONDS, useProgress } from "@/lib/progress-context";
+import { courseData } from "@/lib/course-data";
 
 interface CoursePlayerTemplateProps {
   activeLesson: Lesson;
@@ -12,19 +13,39 @@ interface CoursePlayerTemplateProps {
   linkPrefix?: "courses" | "learn";
 }
 
-// ─── SMART COMPLETION REQUIREMENTS ──────────────────────────────────
-const MIN_VIDEO_SECONDS = 90;
-const MIN_PAGE_SECONDS = 120;
 const TICK_INTERVAL = 1000;
+const SAVE_INTERVAL = 5;
+
+// Resolve a module title from its id for the celebration modal
+function getModuleTitle(moduleId: string): string {
+  for (const tier of courseData) {
+    const mod = tier.modules.find((m) => m.id === moduleId);
+    if (mod) return mod.title.split(": ")[1] ?? mod.title;
+  }
+  return "Module";
+}
 
 export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix = "courses" }: CoursePlayerTemplateProps) {
-  const { isTopicCompleted, completeTopic, startTopic } = useProgress();
+  const {
+    isTopicCompleted,
+    completeTopic,
+    startTopic,
+    recordStudyTime,
+    recordVideoTime,
+    markNotesOpened,
+    setLastActiveTopic,
+    getTopicState,
+    getTopicProgress,
+    moduleJustCompleted,
+    clearModuleCompletion,
+  } = useProgress();
   const completed = isTopicCompleted(activeLesson.id);
+  const savedState = getTopicState(activeLesson.id);
 
   // ─── Engagement Tracking State ─────────────────────────────
-  const [videoSeconds, setVideoSeconds] = useState(0);
-  const [pageSeconds, setPageSeconds] = useState(0);
-  const [notesOpened, setNotesOpened] = useState(false);
+  const [videoSeconds, setVideoSeconds] = useState(savedState.videoSeconds);
+  const [pageSeconds, setPageSeconds] = useState(savedState.studySeconds);
+  const [notesOpened, setNotesOpened] = useState(savedState.notesOpened);
   const [justCompleted, setJustCompleted] = useState(false);
   
   // ─── Layout State ─────────────────────────────
@@ -32,9 +53,12 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
 
   const videoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pageTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const studyBufferRef = useRef(0);
+  const videoBufferRef = useRef(0);
+  const hasVideo = Boolean(activeLesson.videoUrl);
 
   // Conditions
-  const videoOk = videoSeconds >= MIN_VIDEO_SECONDS;
+  const videoOk = !hasVideo || videoSeconds >= MIN_VIDEO_SECONDS;
   const notesOk = notesOpened;
   const pageOk = pageSeconds >= MIN_PAGE_SECONDS;
   const allConditionsMet = videoOk && notesOk && pageOk;
@@ -42,35 +66,73 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
 
   useEffect(() => {
     startTopic(activeLesson.id);
-  }, [activeLesson.id, startTopic]);
+    setLastActiveTopic(activeLesson.id);
+  }, [activeLesson.id, setLastActiveTopic, startTopic]);
 
   useEffect(() => {
-    if (completed) return;
-    setPageSeconds(0);
-    setVideoSeconds(0);
-    setNotesOpened(false);
+    setPageSeconds(savedState.studySeconds);
+    setVideoSeconds(savedState.videoSeconds);
+    setNotesOpened(savedState.notesOpened);
     setJustCompleted(false);
-
-    pageTimerRef.current = setInterval(() => {
-      setPageSeconds((s) => s + 1);
-    }, TICK_INTERVAL);
-    return () => { if (pageTimerRef.current) clearInterval(pageTimerRef.current); };
-  }, [activeLesson.id, completed]);
+    studyBufferRef.current = 0;
+    videoBufferRef.current = 0;
+  }, [activeLesson.id, savedState.notesOpened, savedState.studySeconds, savedState.videoSeconds]);
 
   useEffect(() => {
     if (completed) return;
-    videoTimerRef.current = setInterval(() => {
-      setVideoSeconds((s) => s + 1);
+    pageTimerRef.current = setInterval(() => {
+      setPageSeconds((seconds) => {
+        const next = seconds + 1;
+        studyBufferRef.current += 1;
+
+        if (studyBufferRef.current >= SAVE_INTERVAL) {
+          recordStudyTime(activeLesson.id, studyBufferRef.current);
+          studyBufferRef.current = 0;
+        }
+
+        return next;
+      });
     }, TICK_INTERVAL);
-    return () => { if (videoTimerRef.current) clearInterval(videoTimerRef.current); };
-  }, [activeLesson.id, completed]);
+    return () => {
+      if (pageTimerRef.current) clearInterval(pageTimerRef.current);
+      if (studyBufferRef.current > 0) {
+        recordStudyTime(activeLesson.id, studyBufferRef.current);
+        studyBufferRef.current = 0;
+      }
+    };
+  }, [activeLesson.id, completed, recordStudyTime]);
+
+  useEffect(() => {
+    if (completed || !hasVideo) return;
+    videoTimerRef.current = setInterval(() => {
+      setVideoSeconds((seconds) => {
+        const next = seconds + 1;
+        videoBufferRef.current += 1;
+
+        if (videoBufferRef.current >= SAVE_INTERVAL) {
+          recordVideoTime(activeLesson.id, videoBufferRef.current);
+          videoBufferRef.current = 0;
+        }
+
+        return next;
+      });
+    }, TICK_INTERVAL);
+    return () => {
+      if (videoTimerRef.current) clearInterval(videoTimerRef.current);
+      if (videoBufferRef.current > 0) {
+        recordVideoTime(activeLesson.id, videoBufferRef.current);
+        videoBufferRef.current = 0;
+      }
+    };
+  }, [activeLesson.id, completed, hasVideo, recordVideoTime]);
 
   // Mark notes opened when the notes tab is actively viewed
   useEffect(() => {
     if (activeTab === "notes" && !notesOpened) {
       setNotesOpened(true);
+      markNotesOpened(activeLesson.id);
     }
-  }, [activeTab, notesOpened]);
+  }, [activeLesson.id, activeTab, markNotesOpened, notesOpened]);
 
   useEffect(() => {
     if (!completed && allConditionsMet && !justCompleted) {
@@ -86,9 +148,61 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
 
   const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
+  const lessonProgress = completed ? 100 : getTopicProgress(activeLesson.id);
+
+  // ─── Module Completion Modal ───────────────────────────────
+  const completedModuleTitle = moduleJustCompleted ? getModuleTitle(moduleJustCompleted) : null;
+
   return (
     // ✨ Split-Screen Magic: 50% Video+Progress / 50% Notes+Lessons on Desktop (xl)
-    <div className="flex flex-col xl:flex-row gap-8 w-full">
+    <div className="flex flex-col xl:flex-row gap-6 xl:gap-8 w-full">
+
+      {/* ═══ MODULE COMPLETION CELEBRATION ═══ */}
+      {moduleJustCompleted && completedModuleTitle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
+          <div className="relative mx-3 max-w-md w-full bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0d1420] border border-[#c9a84c]/40 rounded-3xl p-6 text-center shadow-[0_0_80px_rgba(201,168,76,0.25)] animate-in zoom-in-95 duration-500 sm:mx-4 sm:p-10">
+            {/* Dismiss button */}
+            <button
+              onClick={clearModuleCompletion}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center transition-colors"
+            >
+              <X className="w-4 h-4 text-white/60" />
+            </button>
+
+            {/* Trophy glow */}
+            <div className="relative mx-auto mb-6 w-24 h-24">
+              <div className="absolute inset-0 rounded-full bg-[#c9a84c]/20 blur-xl" />
+              <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-[#c9a84c]/30 to-[#c9a84c]/5 border border-[#c9a84c]/40 flex items-center justify-center">
+                <Trophy className="w-12 h-12 text-[#c9a84c]" />
+              </div>
+            </div>
+
+            <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#c9a84c]/70 mb-2">Module Complete</p>
+            <h2 className="text-2xl font-extrabold text-white mb-3 leading-tight">{completedModuleTitle}</h2>
+            <p className="text-base text-white/60 leading-relaxed mb-8">
+              You finished every lesson in this module. Your XP has been saved and your streak is still alive. Keep going!
+            </p>
+
+            <div className="flex flex-col items-stretch justify-center gap-3 mb-8 sm:flex-row sm:items-center">
+              <div className="flex flex-col items-center bg-[#c9a84c]/10 border border-[#c9a84c]/20 rounded-2xl px-6 py-4">
+                <span className="text-3xl font-black text-[#c9a84c]">{moduleLessons.length * 50}</span>
+                <span className="text-xs text-white/50 mt-1 font-medium uppercase tracking-wider">XP Earned</span>
+              </div>
+              <div className="flex flex-col items-center bg-green-500/10 border border-green-500/20 rounded-2xl px-6 py-4">
+                <CheckCircle2 className="w-8 h-8 text-green-400 mb-1" />
+                <span className="text-xs text-white/50 font-medium uppercase tracking-wider">{moduleLessons.length} Lessons</span>
+              </div>
+            </div>
+
+            <button
+              onClick={clearModuleCompletion}
+              className="w-full bg-gradient-to-r from-[#c9a84c] to-[#d4b95e] hover:from-[#d4b95e] hover:to-[#e0c96a] text-[#0a0e1a] font-extrabold text-base py-4 rounded-xl transition-all duration-200 hover:scale-[1.02] shadow-lg"
+            >
+              Continue Learning →
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* ═══ LEFT PANE: Video Container (50%) ═══ */}
       <div className="w-full xl:w-1/2 flex flex-col gap-6 min-w-0">
@@ -96,18 +210,28 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
         {/* Title Block */}
         <div className="px-1 pt-2">
           <p className="text-sm font-semibold text-cyan-400/80 uppercase tracking-widest mb-1">{activeLesson.moduleTitle}</p>
-          <h1 className="text-3xl font-extrabold tracking-tight">{activeLesson.title}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{activeLesson.title}</h1>
         </div>
 
         {/* Video Player */}
         <div className="w-full aspect-video rounded-2xl flex-shrink-0 overflow-hidden bg-black border border-border/50 shadow-2xl relative">
-          <iframe
-            src={activeLesson.videoUrl}
-            title={activeLesson.title}
-            className="absolute top-0 left-0 w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
+          {hasVideo ? (
+            <iframe
+              src={activeLesson.videoUrl}
+              title={activeLesson.title}
+              className="absolute top-0 left-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.16),transparent_45%),linear-gradient(180deg,#06080f_0%,#0a0e1a_100%)] px-8 text-center">
+              <MonitorPlay className="h-12 w-12 text-primary/80" />
+              <h3 className="mt-4 text-xl font-bold text-white">Course video coming soon</h3>
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+                This lesson is ready for its own course video. Once a YouTube video is assigned to this lesson, learners will watch it right here in this player.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between pb-2 border-b border-border/30">
@@ -117,7 +241,7 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
               <CheckCircle2 className="w-4 h-4" /> Lesson Complete
             </div>
           ) : (
-            <div className="text-sm font-semibold text-muted-foreground">{conditionsMet}/3 Done</div>
+            <div className="text-sm font-semibold text-muted-foreground">{lessonProgress}% ready</div>
           )}
         </div>
 
@@ -125,15 +249,19 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
         {!completed && !justCompleted && (
           <div className="bg-secondary/10 rounded-2xl border border-border/50 p-6 space-y-5">
             <div className="flex items-center gap-2 text-[15px] font-semibold text-cyan-300">
-              <Sparkles className="w-5 h-5" /> Let's earn those 50 XP!
+              <Sparkles className="w-5 h-5" /> Let&apos;s earn those 50 XP!
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <div className={`flex flex-col gap-2 p-4 rounded-xl border transition-colors ${videoOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
                 <div className="flex items-center gap-2">
                   <MonitorPlay className={`w-5 h-5 shrink-0 ${videoOk ? "text-green-400" : "text-muted-foreground"}`} />
-                  <p className={`text-sm font-bold ${videoOk ? "text-green-400" : ""}`}>{videoOk ? "Watched" : "Watch Video"}</p>
+                  <p className={`text-sm font-bold ${videoOk ? "text-green-400" : ""}`}>
+                    {!hasVideo ? "No Video Yet" : videoOk ? "Watched" : "Watch Video"}
+                  </p>
                 </div>
-                <p className="text-xs font-medium text-muted-foreground">{videoOk ? "Done" : `${fmt(videoSeconds)} / ${fmt(MIN_VIDEO_SECONDS)}`}</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  {!hasVideo ? "This lesson can have its own course video." : videoOk ? "Done" : `${fmt(videoSeconds)} / ${fmt(MIN_VIDEO_SECONDS)}`}
+                </p>
               </div>
 
               <div className={`flex flex-col gap-2 p-4 rounded-xl border transition-colors ${notesOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
@@ -167,29 +295,29 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
       <div className="w-full xl:w-1/2 flex flex-col bg-secondary/5 rounded-2xl border border-border/50 xl:sticky xl:top-6 xl:h-[calc(100vh-8rem)] overflow-hidden shadow-2xl">
         
         {/* Thick, Beautiful Tab Headers */}
-        <div className="flex p-2 bg-black/40 border-b border-border/40 shrink-0">
+        <div className="flex p-1.5 sm:p-2 bg-black/40 border-b border-border/40 shrink-0">
           <button
             onClick={() => setActiveTab("notes")}
-            className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-xl font-bold transition-all duration-300 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-xl font-bold transition-all duration-300 sm:py-4 sm:px-4 ${
               activeTab === "notes"
                 ? "bg-gradient-to-br from-cyan-900/60 to-primary/30 text-cyan-300 shadow-lg border border-cyan-500/30 scale-[1.02]"
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
             }`}
           >
             <FileText className={`w-5 h-5 ${activeTab === "notes" ? "text-cyan-400" : ""}`} />
-            <span className="text-[15px]">Lab Notes</span>
+            <span className="text-sm sm:text-[15px]">Lab Notes</span>
           </button>
           
           <button
             onClick={() => setActiveTab("lessons")}
-            className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-xl font-bold transition-all duration-300 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-xl font-bold transition-all duration-300 sm:py-4 sm:px-4 ${
               activeTab === "lessons"
                 ? "bg-gradient-to-br from-cyan-900/60 to-primary/30 text-cyan-300 shadow-lg border border-cyan-500/30 scale-[1.02]"
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
             }`}
           >
             <List className={`w-5 h-5 ${activeTab === "lessons" ? "text-cyan-400" : ""}`} />
-            <span className="text-[15px]">Module Lessons</span>
+            <span className="text-sm sm:text-[15px]">Module Lessons</span>
           </button>
         </div>
 
@@ -198,8 +326,8 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
           
           {/* LAB NOTES VIEW */}
           {activeTab === "notes" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out p-6 md:p-10 lg:p-12">
-              <div className="prose prose-invert prose-lg lg:prose-xl xl:prose-2xl max-w-none text-gray-300 prose-teal 
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6 md:p-10 lg:p-12">
+              <div className="prose prose-invert prose-base sm:prose-lg lg:prose-xl xl:prose-2xl max-w-none text-gray-300 prose-teal 
                 prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
                 prose-strong:text-cyan-300 prose-a:text-cyan-400 
                 prose-code:text-cyan-300 prose-code:bg-black/60 prose-code:px-2 prose-code:py-1 prose-code:rounded-lg 

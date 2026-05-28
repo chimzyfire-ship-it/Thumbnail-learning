@@ -9,13 +9,15 @@ import Link from "next/link";
 import { useProgress } from "@/lib/progress-context";
 
 export default function MyCoursesPage() {
-  const { isTopicStarted, isTopicCompleted } = useProgress();
+  const { isTopicStarted, isTopicCompleted, getTopicProgress, totalStudySeconds } = useProgress();
 
   const allTopics = courseData[0].modules.flatMap(m =>
-    m.topics.map(t => ({
-      ...t,
-      moduleName: m.title,
-    }))
+    m.topics
+      .filter((topic) => Boolean(topic.cheatSheetHtml))
+      .map(t => ({
+        ...t,
+        moduleName: m.title,
+      }))
   );
 
   const enrolled = allTopics.filter(t => isTopicStarted(t.id));
@@ -48,8 +50,8 @@ export default function MyCoursesPage() {
               <Clock className="w-6 h-6 text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{inProgress.length}</p>
-              <p className="text-xs text-muted-foreground">In Progress</p>
+              <p className="text-2xl font-bold text-white">{Math.floor(totalStudySeconds / 60)}m</p>
+              <p className="text-xs text-muted-foreground">Study Time Saved</p>
             </div>
           </CardContent>
         </Card>
@@ -83,8 +85,8 @@ export default function MyCoursesPage() {
                     <p className="font-semibold text-white">{t.title}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{t.moduleName}</p>
                     <div className="flex items-center gap-3 mt-2 max-w-xs">
-                      <Progress value={15} className="h-1.5 flex-1 [&>div]:bg-cyan-400" /> {/* Visual 15% marker point for in progress */}
-                      <span className="text-xs font-bold text-cyan-400">In Progress</span>
+                      <Progress value={getTopicProgress(t.id)} className="h-1.5 flex-1 [&>div]:bg-cyan-400" />
+                      <span className="text-xs font-bold text-cyan-400">{getTopicProgress(t.id)}%</span>
                     </div>
                   </div>
                   <Link href={`/learn/${t.id}`} passHref legacyBehavior>

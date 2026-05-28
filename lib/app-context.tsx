@@ -43,53 +43,82 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [usernameState, setUsernameState] = useState<string>("guest");
   const [mounted, setMounted] = useState(false);
 
-  // Load saved preferences from localStorage on mount
+  // Load saved preferences AND derive identity from the live Supabase session
   useEffect(() => {
-    const savedTheme = localStorage.getItem("tt_theme") as Theme | null;
     const savedLang = localStorage.getItem("tt_lang") as Lang | null;
     const savedAi = localStorage.getItem("tt_ai");
-    
-    const uid = localStorage.getItem("tt_user_id") || "guest";
-    setUsernameState(uid);
-    const savedAvatar = localStorage.getItem(`tt_avatar_${uid}`);
-    const savedName = localStorage.getItem(`tt_name_${uid}`);
-
-    if (savedTheme) setThemeState(savedTheme);
     if (savedLang) setLangState(savedLang);
     if (savedAi) setAiLevel(savedAi);
-    if (savedAvatar) setAvatarState(savedAvatar);
-    if (savedName) setNameState(savedName);
 
-    const pullLiveName = async () => {
-      if (uid !== "guest") {
-        try {
-          const supabase = createClient();
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user?.user_metadata?.first_name) {
-             setNameState(user.user_metadata.first_name);
-             localStorage.setItem(`tt_name_${uid}`, user.user_metadata.first_name);
-          }
-        } catch {}
+    // Derive identity from the active Supabase session, not localStorage
+    const hydrateUser = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user) {
+          const uid = user.id;
+          setUsernameState(uid);
+          localStorage.setItem("tt_user_id", uid);
+
+          // Priority: user_metadata (set at signup) > cached localStorage > fallback
+          const firstName = user.user_metadata?.first_name;
+          const cached = localStorage.getItem(`tt_name_${uid}`);
+          const displayName = firstName || cached || "User";
+
+          setNameState(displayName);
+          localStorage.setItem(`tt_name_${uid}`, displayName);
+
+          // Avatar
+          const savedAvatar = localStorage.getItem(`tt_avatar_${uid}`);
+          if (savedAvatar) setAvatarState(savedAvatar);
+        } else {
+          // No session — fall back to guest
+          setUsernameState("guest");
+          setNameState("User");
+        }
+      } catch {
+        // Auth check failed, stay as guest
       }
     };
-    pullLiveName();
-    
+
+    hydrateUser();
     setMounted(true);
   }, []);
 
-  // Apply theme class to <html>
+  // Re-hydrate when the auth state changes (login, logout, token refresh)
+  useEffect(() => {
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const uid = session.user.id;
+        setUsernameState(uid);
+        localStorage.setItem("tt_user_id", uid);
+
+        const firstName = session.user.user_metadata?.first_name;
+        const cached = localStorage.getItem(`tt_name_${uid}`);
+        const displayName = firstName || cached || "User";
+
+        setNameState(displayName);
+        localStorage.setItem(`tt_name_${uid}`, displayName);
+      } else {
+        setUsernameState("guest");
+        setNameState("User");
+        setAvatarState(null);
+        localStorage.removeItem("tt_user_id");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Always enforce dark mode — Aethel is a dark-only brand
   useEffect(() => {
     if (!mounted) return;
     const html = document.documentElement;
-    if (theme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-    } else {
-      html.classList.add("light");
-      html.classList.remove("dark");
-    }
-    localStorage.setItem("tt_theme", theme);
-  }, [theme, mounted]);
+    html.classList.add("dark");
+    html.classList.remove("light");
+  }, [mounted]);
 
   // Persist language
   useEffect(() => {

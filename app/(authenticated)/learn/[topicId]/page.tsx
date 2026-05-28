@@ -2,6 +2,8 @@ import { getTopicById } from "@/lib/course-data";
 import { notFound } from "next/navigation";
 import { CoursePlayerTemplate } from "@/components/CoursePlayerTemplate";
 import type { Lesson } from "@/lib/db";
+import { toYouTubeEmbedUrl } from "@/lib/youtube";
+import { getLessonOverrideByTopicId, getLessonOverridesByTopicIds } from "@/lib/lesson-overrides";
 
 export default async function LearnTopicPage({
   params,
@@ -15,16 +17,24 @@ export default async function LearnTopicPage({
     notFound();
   }
 
-  const { topic, module, tier } = data;
+  const { topic, module } = data;
+  const [activeOverride, moduleOverrides] = await Promise.all([
+    getLessonOverrideByTopicId(topic.id),
+    getLessonOverridesByTopicIds(module.topics.map((item) => item.id)),
+  ]);
+
+  if (!topic.cheatSheetHtml && !activeOverride?.cheatSheetHtml) {
+    notFound();
+  }
 
   // Map the legacy Topic data to the new dynamic Lesson format expected by the template
   const activeLesson: Lesson = {
     id: topic.id,
     moduleId: module.id,
     moduleTitle: module.title,
-    title: topic.title,
-    videoUrl: topic.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    cheatSheetHtml: topic.cheatSheetHtml || `<h2>Lab Notes: ${topic.title}</h2><p>${topic.description}</p>`,
+    title: activeOverride?.title || topic.title,
+    videoUrl: activeOverride?.videoUrl || toYouTubeEmbedUrl(topic.videoUrl) || undefined,
+    cheatSheetHtml: activeOverride?.cheatSheetHtml || topic.cheatSheetHtml || `<h2>Lab Notes: ${topic.title}</h2><p>${topic.description}</p>`,
     order: topic.number,
     completed: topic.completed,
   };
@@ -33,9 +43,9 @@ export default async function LearnTopicPage({
     id: t.id,
     moduleId: module.id,
     moduleTitle: module.title,
-    title: t.title,
-    videoUrl: t.videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    cheatSheetHtml: t.cheatSheetHtml || "",
+    title: moduleOverrides.get(t.id)?.title || t.title,
+    videoUrl: moduleOverrides.get(t.id)?.videoUrl || toYouTubeEmbedUrl(t.videoUrl) || undefined,
+    cheatSheetHtml: moduleOverrides.get(t.id)?.cheatSheetHtml || t.cheatSheetHtml || "",
     order: t.number,
     completed: t.completed,
   }));

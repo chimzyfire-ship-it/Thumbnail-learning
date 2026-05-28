@@ -1,34 +1,32 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Brain, Code, Zap, Target, ArrowRight } from "lucide-react";
+import { Brain, BookOpen, PlayCircle, ShieldCheck, ArrowRight } from "lucide-react";
 import { MatrixBackground } from "@/components/ui/matrix-background";
 
 export default function MarketingPage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="mx-auto flex max-w-[100vw] flex-col items-center justify-center px-6 py-32 text-center md:py-48 relative overflow-hidden">
-        {/* Cyberpunk Matrix Background */}
+      <section className="mx-auto flex max-w-[100vw] flex-col items-center justify-center px-4 py-24 text-center sm:px-6 md:py-40 relative overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-60 mix-blend-screen pointer-events-none" style={{ maskImage: "linear-gradient(to bottom, black 20%, transparent 95%)", WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 95%)" }}>
           <MatrixBackground />
         </div>
-        
 
-        
         <div className="relative z-10 mb-8 flex flex-col items-center justify-center w-full">
-          <div className="relative flex items-center justify-center w-full max-w-4xl p-4 md:p-12 rounded-3xl group transition-all duration-1000">
-            {/* The Magic CSS trick: Invert turns White bg to Black. Hue-rotate 180 turns inverted cyan back to cyan. Mix blend screen drops the black! */}
+          <div className="relative flex items-center justify-center w-full max-w-3xl p-4 md:p-10 rounded-3xl group transition-all duration-1000">
             <img 
-              src="/logo.png" 
-              alt="Thumbnail Learning" 
-              className="w-full h-auto max-h-[400px] object-contain invert hue-rotate-180 mix-blend-screen filter drop-shadow-[0_0_15px_rgba(0,255,255,0.3)]" 
+              src="/aethel-logo.png" 
+              alt="Aethel Solutions" 
+              className="h-44 w-auto object-contain drop-shadow-[0_0_35px_rgba(201,168,76,0.28)] sm:h-56" 
             />
           </div>
         </div>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-          Interactive AI-driven courses, real-time code execution, and personalized
-          learning paths designed to give you the unfair advantage in tech.
+        <h1 className="relative z-10 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl">
+          Learn AI for everyday work, study, and clearer thinking.
+        </h1>
+        <p className="relative z-10 mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground md:text-xl">
+          Aethel Solutions gives learners clear lessons, course videos, lab notes, private study materials, progress tracking, and a protected AI helper.
         </p>
         <div className="mt-10 flex flex-col gap-4 sm:flex-row justify-center">
           <Link href="/login" passHref legacyBehavior>
@@ -49,34 +47,59 @@ export default function MarketingPage() {
         <div className="grid gap-8 md:grid-cols-3">
           <Card className="glass flex flex-col items-start p-8 transition-transform hover:-translate-y-1">
             <div className="rounded-lg bg-primary/10 p-3 mb-6 glow-cyan">
-              <Brain className="h-6 w-6 text-primary" />
+              <PlayCircle className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">AI-Powered Curriculum</h3>
+            <h3 className="text-xl font-bold mb-3">Course player</h3>
             <p className="text-muted-foreground">
-              Dynamic courses that adapt to your skill level and learning speed in real-time.
+              Watch each assigned lesson video inside the platform and read the matching lab notes in one place.
             </p>
           </Card>
 
           <Card className="glass flex flex-col items-start p-8 transition-transform hover:-translate-y-1">
             <div className="rounded-lg bg-blue-accent/10 p-3 mb-6">
-              <Code className="h-6 w-6 text-blue-accent" />
+              <BookOpen className="h-6 w-6 text-blue-accent" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Interactive Code Labs</h3>
+            <h3 className="text-xl font-bold mb-3">Progress and XP</h3>
             <p className="text-muted-foreground">
-              Write, execute, and debug code directly in your browser with AI assistance.
+              Resume where you stopped, build a streak, and earn XP only from real lesson activity.
             </p>
           </Card>
 
           <Card className="glass flex flex-col items-start p-8 transition-transform hover:-translate-y-1">
             <div className="rounded-lg bg-cyan-500/10 p-3 mb-6">
-              <Target className="h-6 w-6 text-cyan-400" />
+              <Brain className="h-6 w-6 text-cyan-400" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Project-Based Learning</h3>
+            <h3 className="text-xl font-bold mb-3">Study space</h3>
             <p className="text-muted-foreground">
-              Build real-world applications instead of just watching theoretical videos.
+              Save private materials, take notes, use a focus timer, and ask the AI helper when you need support.
             </p>
           </Card>
         </div>
+      </section>
+
+      <section id="courses" className="mx-auto max-w-7xl px-6 pb-28">
+        <Card className="glass overflow-hidden p-8 md:p-10">
+          <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#c9a84c]/20 bg-[#c9a84c]/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-[#c9a84c]">
+                <ShieldCheck className="h-4 w-4" /> MVP ready shape
+              </div>
+              <h2 className="text-3xl font-black text-white md:text-4xl">Only ready lessons are shown to learners.</h2>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+                The platform does not need to pretend every lesson is finished. Learners see the completed course content first, and unfinished lessons stay hidden until they are ready.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#c9a84c]/20 bg-black/30 p-6">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#c9a84c]/80">Included now</p>
+              <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
+                <li>The Power of Screenshots</li>
+                <li>Asking the Right Questions</li>
+                <li>Chatting, Not Searching</li>
+                <li>More lessons appear only when fully prepared</li>
+              </ul>
+            </div>
+          </div>
+        </Card>
       </section>
     </div>
   );

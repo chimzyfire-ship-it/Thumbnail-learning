@@ -7,6 +7,7 @@ export type Topic = {
   completed: boolean;
   videoUrl?: string;
   cheatSheetHtml?: string;
+  coverImage?: string;
 };
 
 export type Module = {
@@ -21,6 +22,688 @@ export type Tier = {
   focus: string;
   modules: Module[];
 };
+
+const screenshotLessonHtml = `<div class="space-y-10 text-gray-300">
+  <div class="border-b border-gray-800 pb-6">
+    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-500 mb-4 tracking-tight">The Power of Screenshots</h2>
+    <p class="text-lg leading-relaxed text-gray-400">A screenshot can save you from long, tiring explanation. Instead of struggling to describe what you are seeing, you can simply show it. The moment you share the picture and add one clear instruction, your helper can understand faster, answer better, and guide you with more confidence.</p>
+    <p class="text-base leading-relaxed text-gray-400 mt-4">This matters because many people do not get stuck because they are slow. They get stuck because they are trying to explain a problem with words when the problem is already sitting clearly on the screen. A screenshot closes that gap. It turns confusion into something visible, and once it becomes visible, it becomes easier to solve.</p>
+  </div>
+
+  <div class="bg-teal-900/20 p-6 rounded-2xl border border-teal-800/50">
+    <h3 class="text-2xl font-bold text-teal-300 mb-3">Why this is such a big deal</h3>
+    <div class="space-y-3 text-gray-300 leading-relaxed">
+      <p>A screenshot gives the full picture at once: the words on the screen, the buttons, the warning, the layout, and the small details you may forget to mention.</p>
+      <p>It removes guessing. Instead of your helper trying to imagine what you mean, they can react to what is actually there.</p>
+      <p>It helps when you feel overwhelmed. If your screen feels messy or stressful, a screenshot lets you say, "Look at this and help me," without needing the perfect explanation first.</p>
+      <p>It also helps with speed. Many problems that take ten minutes to explain with typing can be understood in seconds with one clear image.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
+      <span class="bg-teal-900/50 text-teal-300 p-2 rounded-lg mr-3 border border-teal-800">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </span>
+      The 3-Step Move
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 hover:border-teal-500/30 transition-all">
+        <div class="text-2xl font-black text-teal-500 mb-2">1. Snap</div>
+        <p class="text-sm text-gray-400 leading-relaxed">Take a clean screenshot or clear photo of the exact thing you need help with. Do not send the whole world if the problem is only one small part.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 hover:border-teal-500/30 transition-all">
+        <div class="text-2xl font-black text-teal-500 mb-2">2. Share</div>
+        <p class="text-sm text-gray-400 leading-relaxed">Upload the picture straight into the chat. If the first image does not tell the full story, add a second one that shows what happened before or after.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 hover:border-teal-500/30 transition-all">
+        <div class="text-2xl font-black text-teal-500 mb-2">3. Say</div>
+        <p class="text-sm text-gray-400 leading-relaxed">Add one simple instruction. Say what you want: explain it, summarize it, tell me what button to press, or help me reply.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-red-900/20 p-5 rounded-xl border border-red-800/50">
+      <h3 class="text-xl font-bold text-red-300 mb-3">Weak way</h3>
+      <p class="text-sm text-gray-400 italic leading-relaxed">"My screen is acting strange and I do not know what to do."</p>
+      <p class="text-sm text-red-100/80 mt-3 leading-relaxed">This is too vague. Your helper has to guess what screen, what warning, and what outcome you want.</p>
+    </div>
+    <div class="bg-teal-900/20 p-5 rounded-xl border border-teal-800/50">
+      <h3 class="text-xl font-bold text-teal-300 mb-3">Strong way</h3>
+      <p class="text-sm text-gray-200 italic leading-relaxed">"Look at this screenshot. I want to send an invoice, but I do not know which button to press next. Walk me through it in plain steps."</p>
+      <p class="text-sm text-teal-100/80 mt-3 leading-relaxed">Now the picture shows the situation, and the instruction shows the goal. That is where strong help begins.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-2">The Prompt Vault</h3>
+    <p class="text-sm text-gray-400 mb-6">Use these ready-made lines with your screenshots. They are simple, direct, and easy to copy.</p>
+    <div class="space-y-5">
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-teal-500 shadow-lg">
+        <span class="text-xs text-teal-400 uppercase font-bold tracking-widest bg-teal-900/30 px-2 py-1 rounded">Confusing Screen</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Look at this screenshot and tell me exactly what to press next to get the result I want. Keep your answer simple and direct."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> forms, settings pages, payment pages, sign-up steps, and any place where you feel stuck.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-cyan-500 shadow-lg">
+        <span class="text-xs text-cyan-400 uppercase font-bold tracking-widest bg-cyan-900/30 px-2 py-1 rounded">Letter or Document</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Read this image and tell me the main point, the important dates, and the next thing I should do. Explain it like you are talking to a beginner."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> letters, bills, notices, forms, printed instructions, and handwritten notes.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg">
+        <span class="text-xs text-blue-400 uppercase font-bold tracking-widest bg-blue-900/30 px-2 py-1 rounded">Product or Item</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Look at this picture and tell me what this is, what the important information means, and anything I should be careful about."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> labels, medicine packs, food packs, home tools, machine panels, and items with confusing writing.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-emerald-500 shadow-lg">
+        <span class="text-xs text-emerald-400 uppercase font-bold tracking-widest bg-emerald-900/30 px-2 py-1 rounded">Proof of Payment or Receipt</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Read this receipt and pull out the amount, date, sender, and reference number. Put the answer in a neat list I can copy."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> receipts, transfer slips, checkout confirmations, and order summaries.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-fuchsia-500 shadow-lg">
+        <span class="text-xs text-fuchsia-400 uppercase font-bold tracking-widest bg-fuchsia-900/30 px-2 py-1 rounded">Message Help</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Look at this message and help me reply. Keep my reply calm, clear, and respectful."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> customer chats, business messages, family messages, and tense conversations.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-900/70 p-6 rounded-2xl border border-gray-800">
+    <h3 class="text-2xl font-bold text-white mb-4">What makes a screenshot truly useful</h3>
+    <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+      <p><strong class="text-white">Show the exact problem.</strong> If the issue is a warning box, make sure that warning box is easy to see.</p>
+      <p><strong class="text-white">Cut out distractions.</strong> Remove extra parts that do not matter. A cleaner image makes the answer cleaner too.</p>
+      <p><strong class="text-white">Point to the important part.</strong> If needed, draw a circle or arrow before you upload.</p>
+      <p><strong class="text-white">Say the outcome you want.</strong> Do not only say what is wrong. Also say what you are trying to achieve.</p>
+      <p><strong class="text-white">Ask for the style of answer you need.</strong> You can ask for bullet points, short steps, a summary, or a reply you can copy.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-5">Everyday moments where this helps a lot</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a payment page feels confusing</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Send the screenshot and ask which option is the safe one, what each option means, and which step should come next.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a form has strange words</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Share the form and ask for a simple explanation of each box so you do not fill the wrong thing.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a letter arrives and you feel pressure</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Upload it and ask for the main message, deadline, and what action matters most right now.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a customer sends a confusing screenshot</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Use the image to understand the customer faster, then ask for a helpful reply you can send back.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a label or instructions feel unclear</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Take a photo and ask for the meaning in simple words, plus any warning or important detail you should not miss.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When you need confidence before you act</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">A screenshot can help you double-check what you are seeing before you click, submit, pay, or respond.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <div class="bg-orange-900/20 p-5 rounded-xl border border-orange-800/50">
+      <h4 class="text-orange-400 font-bold mb-2 flex items-center text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Privacy First
+      </h4>
+      <p class="text-sm text-orange-200/80 leading-relaxed">Do not upload private details you would not want shared. Cover account numbers, passwords, personal ID details, private phone numbers, or anything sensitive before you send the image. If it feels too private, hide it first.</p>
+    </div>
+    <div class="bg-gray-800/50 p-5 rounded-xl border border-gray-700">
+      <h4 class="text-gray-200 font-bold mb-2 flex items-center text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Quick Rescue
+      </h4>
+      <ul class="text-sm text-gray-400 space-y-2">
+        <li><strong class="text-white">The answer is too general:</strong> Ask again and say the exact result you want.</li>
+        <li><strong class="text-white">The picture is hard to read:</strong> Take a cleaner image with better light or a closer view.</li>
+        <li><strong class="text-white">Too much is happening in one image:</strong> crop it or send two images in order.</li>
+        <li><strong class="text-white">You still feel lost:</strong> ask for the answer in short steps, one step at a time.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10 pt-10 border-t border-gray-800 border-dashed">
+    <h3 class="text-3xl font-extrabold text-white mb-6">Real-Life Impact</h3>
+    <div class="space-y-5 text-gray-400 leading-relaxed">
+      <p>A screenshot is not just a convenience tool. It can protect your time, your money, and your peace of mind. One clear image can stop you from filling the wrong form, sending the wrong reply, missing an important date, or pressing the wrong button in a stressful moment.</p>
+      <p>It also gives people courage. Many people stay quiet because they do not know how to explain what they are seeing. A screenshot gives them a voice. It says, "I may not have the perfect words, but here is the situation. Help me understand it."</p>
+      <p>That is powerful. It means help is no longer only for people who are good at explaining. Help becomes available to anyone who can point, show, and ask.</p>
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-br from-teal-900/40 to-gray-900 p-6 rounded-2xl border border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.1)] mt-8">
+    <div class="flex items-center space-x-3 mb-4 border-b border-teal-800/50 pb-3">
+      <div class="bg-teal-500 text-gray-900 font-extrabold px-3 py-1 rounded text-sm uppercase tracking-widest shadow-lg">Practice</div>
+      <h3 class="text-2xl font-bold text-teal-300">Do This Right Now</h3>
+    </div>
+    <p class="text-teal-50 leading-relaxed mb-5 text-lg">The fastest way to believe this lesson is to try it immediately.</p>
+    <div class="space-y-4 text-teal-100 font-medium">
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
+        <p class="pt-1">Find one thing around you that feels unclear: a message, a label, a form, a page, a receipt, or a setting on your phone.</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
+        <p class="pt-1">Take a clean screenshot or photo of only the part that matters most.</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
+        <p class="pt-1">Send it with this line: <strong class="text-white bg-black/30 px-2 py-1 rounded">"Look at this image and help me understand what I am seeing. Then tell me the next best step in simple words."</strong></p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">4</span>
+        <p class="pt-1">If the answer feels too broad, ask one more time: <strong class="text-white">"Make it shorter and give me only the exact step to take first."</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-10 pt-10 border-t border-gray-800 border-dashed pb-20">
+    <h3 class="text-3xl font-extrabold text-white mb-6">Remember This</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-black/40 p-5 rounded-lg border border-gray-800">
+        <strong class="text-teal-400 block mb-2">Do</strong>
+        <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+          <li>Show the exact issue.</li>
+          <li>Ask for a clear result.</li>
+          <li>Keep the image clean and easy to read.</li>
+          <li>Ask for simple steps if you want action.</li>
+        </ul>
+      </div>
+      <div class="bg-black/40 p-5 rounded-lg border border-gray-800">
+        <strong class="text-red-400 block mb-2">Do Not</strong>
+        <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+          <li>Send private details without hiding them.</li>
+          <li>Upload blurry images and hope for the best.</li>
+          <li>Send a screenshot with no instruction.</li>
+          <li>Ask a vague question when you already know the result you want.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const askingLessonHtml = `<div class="space-y-10 text-gray-300">
+  <div class="border-b border-gray-800 pb-6">
+    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-500 mb-4 tracking-tight">Asking the Right Questions</h2>
+    <p class="text-lg leading-relaxed text-gray-400">Most people do not get weak answers because the helper is useless. They get weak answers because they ask in a rushed, unclear way. If your question is foggy, the answer will also be foggy. If your question is sharp, the answer becomes more useful, more human, and much closer to what you actually need.</p>
+    <p class="text-base leading-relaxed text-gray-400 mt-4">This lesson is really about control. You do not need long speeches. You do not need fancy words. You just need to guide the helper properly. A few clear details can change a bland answer into something you can truly use.</p>
+  </div>
+
+  <div class="bg-teal-900/20 p-6 rounded-2xl border border-teal-800/50">
+    <h3 class="text-2xl font-bold text-teal-300 mb-3">Why this matters so much</h3>
+    <div class="space-y-3 text-gray-300 leading-relaxed">
+      <p>A clear question saves time. Instead of going back and forth again and again, you get closer to the right answer much faster.</p>
+      <p>A clear question protects your tone. If you want something warm, calm, respectful, bold, or simple, you need to say so.</p>
+      <p>A clear question gives better results in real life. It can help you send better messages, make clearer plans, understand difficult topics, and avoid embarrassing mistakes.</p>
+      <p>Most importantly, a clear question helps you feel less frustrated. You stop guessing and start directing.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-red-900/20 p-5 rounded-xl border border-red-800/50">
+      <h3 class="text-xl font-bold text-red-300 mb-3">Weak question</h3>
+      <p class="text-sm text-gray-400 italic leading-relaxed">"Write a message to my customer."</p>
+      <p class="text-sm text-red-100/80 mt-3 leading-relaxed">This leaves out almost everything that matters. What happened? What tone do you want? How short should it be? What result are you trying to get?</p>
+    </div>
+    <div class="bg-teal-900/20 p-5 rounded-xl border border-teal-800/50">
+      <h3 class="text-xl font-bold text-teal-300 mb-3">Strong question</h3>
+      <p class="text-sm text-gray-200 italic leading-relaxed">"Write a short WhatsApp message to a customer whose order is late. Apologize, explain that delivery will happen tomorrow, and keep the tone calm and respectful."</p>
+      <p class="text-sm text-teal-100/80 mt-3 leading-relaxed">Now the helper knows the situation, the goal, and the style. That makes the answer far more useful.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
+      <span class="bg-teal-900/50 text-teal-300 p-2 rounded-lg mr-3 border border-teal-800">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </span>
+      The 3-Part Formula
+    </h3>
+    <div class="space-y-4">
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">1</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">Who</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">Say who the helper should sound like. This shapes the voice of the answer. You can ask for a calm teacher, a polite business owner, a caring assistant, or a confident planner.</p>
+        </div>
+      </div>
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">2</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">What</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">Say exactly what you need. This is the job. It could be a message, a summary, an explanation, a plan, a list, or a reply.</p>
+        </div>
+      </div>
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">3</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">How</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">Say how you want it delivered. Short or detailed. Warm or firm. In bullet points or plain lines. Simple words or professional words. This is where the answer becomes yours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-900/70 p-6 rounded-2xl border border-gray-800">
+    <h3 class="text-2xl font-bold text-white mb-4">The easiest way to remember it</h3>
+    <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+      <p><strong class="text-white">Who:</strong> Who should the helper sound like?</p>
+      <p><strong class="text-white">What:</strong> What exactly do you want it to do?</p>
+      <p><strong class="text-white">How:</strong> How should the final answer feel, sound, and look?</p>
+      <p>When these three parts are present, your question becomes much stronger, even if it is still short.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-2">The Prompt Vault</h3>
+    <p class="text-sm text-gray-400 mb-6">Use these ready-made lines when you want better answers without overthinking it.</p>
+    <div class="space-y-5">
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-teal-500 shadow-lg">
+        <span class="text-xs text-teal-400 uppercase font-bold tracking-widest bg-teal-900/30 px-2 py-1 rounded">Message Writing</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Write a short message to [person] about [situation]. Keep it [tone] and make sure the main point is [goal]."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> customer messages, follow-ups, apology notes, reminders, and personal replies.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-cyan-500 shadow-lg">
+        <span class="text-xs text-cyan-400 uppercase font-bold tracking-widest bg-cyan-900/30 px-2 py-1 rounded">Simple Explanation</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Explain [topic] to me in simple words. Assume I am new to it. Use everyday examples and keep it easy to follow."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> confusing topics, new ideas, money questions, contracts, forms, and life admin.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg">
+        <span class="text-xs text-blue-400 uppercase font-bold tracking-widest bg-blue-900/30 px-2 py-1 rounded">Planning Help</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Help me make a simple plan for [goal]. Break it into steps I can actually follow this week."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> business plans, study plans, budgeting, event prep, and task organization.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-emerald-500 shadow-lg">
+        <span class="text-xs text-emerald-400 uppercase font-bold tracking-widest bg-emerald-900/30 px-2 py-1 rounded">Ideas and Options</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Give me 5 realistic ideas for [goal]. Keep them low-cost, practical, and easy to start."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> business ideas, marketing ideas, side income ideas, and creative problem solving.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-fuchsia-500 shadow-lg">
+        <span class="text-xs text-fuchsia-400 uppercase font-bold tracking-widest bg-fuchsia-900/30 px-2 py-1 rounded">Reply Help</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Help me reply to this in a calm and respectful way. Keep my reply short and clear."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> tense chats, awkward replies, customer complaints, and delicate conversations.</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-5">Small details that make a huge difference</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">Say the audience</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">A message to a close friend should not sound like a message to a client. Mention who the answer is for.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">Say the tone</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">If you want warm, kind, bold, polite, firm, or relaxed, say it plainly.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">Say the length</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">If you want one paragraph, three bullet points, or a very short answer, ask for that directly.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">Say the result you want</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Do you want to calm someone down, get payment, understand a topic, or make a plan? Name the end goal.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">Say what to avoid</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">You can say things like: do not sound rude, do not make it too formal, do not make up details, do not use big words.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">Ask again when needed</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">If the first answer is close but not perfect, do not start over. Ask for a cleaner, shorter, warmer, or stronger version.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-blue-900/20 border border-blue-800/40 p-5 rounded-2xl">
+    <h4 class="text-blue-300 font-bold mb-3 text-lg">One powerful move people forget</h4>
+    <p class="text-sm text-blue-100/80 leading-relaxed mb-3">Tell the helper what not to do. This is one of the fastest ways to improve the answer.</p>
+    <ul class="text-sm text-blue-100 space-y-2 list-disc pl-5">
+      <li>Do not use big words.</li>
+      <li>Do not make it too long.</li>
+      <li>Do not sound cold or robotic.</li>
+      <li>Do not invent facts if something is missing.</li>
+    </ul>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-5">Everyday moments where this helps a lot</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When you need to send a difficult message</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">A better question helps you get a message that sounds human instead of harsh, weak, or awkward.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When you want to understand something new</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">A strong question helps you learn without drowning in confusing language.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When you want practical ideas</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">If you ask for ideas in the right way, you get options you can actually use instead of vague inspiration.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When you want a reply you can send immediately</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Good questions produce answers that need less editing and feel more like you.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <div class="bg-orange-900/20 p-5 rounded-xl border border-orange-800/50">
+      <h4 class="text-orange-400 font-bold mb-2 flex items-center text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Common Mistake
+      </h4>
+      <p class="text-sm text-orange-200/80 leading-relaxed">Many people ask in a way that is too broad, then blame the answer. Before you do that, check if your question clearly said the job, the tone, and the result you wanted.</p>
+    </div>
+    <div class="bg-gray-800/50 p-5 rounded-xl border border-gray-700">
+      <h4 class="text-gray-200 font-bold mb-2 flex items-center text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Quick Rescue
+      </h4>
+      <ul class="text-sm text-gray-400 space-y-2">
+        <li><strong class="text-white">The answer is too long:</strong> ask for a shorter version in 3 points or 4 lines.</li>
+        <li><strong class="text-white">The answer sounds strange:</strong> ask for a warmer, simpler, more natural tone.</li>
+        <li><strong class="text-white">The answer is too broad:</strong> restate the exact situation and end goal.</li>
+        <li><strong class="text-white">The answer feels fake:</strong> tell it not to invent details and to stay realistic.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10 pt-10 border-t border-gray-800 border-dashed">
+    <h3 class="text-3xl font-extrabold text-white mb-6">Real-Life Impact</h3>
+    <div class="space-y-5 text-gray-400 leading-relaxed">
+      <p>Knowing how to ask well is like learning how to steer. Without it, you are just hoping for something useful. With it, you start guiding the outcome.</p>
+      <p>This can save relationships, improve sales conversations, make learning easier, and reduce the stress that comes from not knowing what to say.</p>
+      <p>A better question does not only give you a better answer. It gives you more confidence because you can shape the help you receive.</p>
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-br from-teal-900/40 to-gray-900 p-6 rounded-2xl border border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.1)] mt-8">
+    <div class="flex items-center space-x-3 mb-4 border-b border-teal-800/50 pb-3">
+      <div class="bg-teal-500 text-gray-900 font-extrabold px-3 py-1 rounded text-sm uppercase tracking-widest shadow-lg">Practice</div>
+      <h3 class="text-2xl font-bold text-teal-300">Build One Strong Question</h3>
+    </div>
+    <p class="text-teal-50 leading-relaxed mb-5 text-lg">Try this now with a real task you have been putting off.</p>
+    <div class="space-y-4 text-teal-100 font-medium">
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
+        <p class="pt-1">Think of one thing you need help with today: a message, a plan, a reply, or an explanation.</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
+        <p class="pt-1">Write the <strong>Who</strong>: who should the helper sound like?</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
+        <p class="pt-1">Write the <strong>What</strong>: what exactly do you want it to do?</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">4</span>
+        <p class="pt-1">Write the <strong>How</strong>: how should the answer feel, sound, or be arranged?</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">5</span>
+        <p class="pt-1">If needed, add one line for what to avoid, like: <strong class="text-white">"Do not use big words."</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-10 pt-10 border-t border-gray-800 border-dashed pb-20">
+    <h3 class="text-3xl font-extrabold text-white mb-6">Remember This</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-black/40 p-5 rounded-lg border border-gray-800">
+        <strong class="text-teal-400 block mb-2">Do</strong>
+        <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+          <li>Say the exact job clearly.</li>
+          <li>Say the tone you want.</li>
+          <li>Say who the answer is for.</li>
+          <li>Say the result you want.</li>
+          <li>Ask for a rewrite if the first answer is close but not right.</li>
+        </ul>
+      </div>
+      <div class="bg-black/40 p-5 rounded-lg border border-gray-800">
+        <strong class="text-red-400 block mb-2">Do Not</strong>
+        <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+          <li>Ask in a vague way and expect a perfect answer.</li>
+          <li>Leave out the tone and audience.</li>
+          <li>Accept a long answer when you needed something short.</li>
+          <li>Start over too quickly instead of refining the first answer.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const chattingLessonHtml = `<div class="space-y-10 text-gray-300">
+  <div class="border-b border-gray-800 pb-6">
+    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-500 mb-4 tracking-tight">Chatting, Not Searching</h2>
+    <p class="text-lg leading-relaxed text-gray-400">Many people still treat AI like a search box. They ask one question, get one answer, and if the answer feels wrong, they throw everything away and start again. That habit wastes time. AI works better when you treat it like a real back-and-forth conversation.</p>
+    <p class="text-base leading-relaxed text-gray-400 mt-4">You do not need the first answer to be perfect. You only need it to be a starting point. From there, you can shape it, trim it, soften it, sharpen it, or redirect it. That is where the real power begins.</p>
+  </div>
+
+  <div class="bg-teal-900/20 p-6 rounded-2xl border border-teal-800/50">
+    <h3 class="text-2xl font-bold text-teal-300 mb-3">Why this changes everything</h3>
+    <div class="space-y-3 text-gray-300 leading-relaxed">
+      <p>A conversation lets you improve the answer step by step instead of hoping for perfection in one shot.</p>
+      <p>You save time because you build on what already exists instead of rewriting your whole request from the beginning.</p>
+      <p>You get more personal results because the helper learns what style, tone, and direction you want as the chat continues.</p>
+      <p>You feel less stuck because you stop thinking, "This failed," and start thinking, "Let me guide it better."</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-red-900/20 p-5 rounded-xl border border-red-800/50">
+      <h3 class="text-xl font-bold text-red-300 mb-3">Search-box habit</h3>
+      <p class="text-sm text-gray-400 italic leading-relaxed">Ask once. Dislike the answer. Delete everything. Start over from zero.</p>
+      <p class="text-sm text-red-100/80 mt-3 leading-relaxed">This creates frustration. You lose context, repeat yourself, and often end up with another average answer.</p>
+    </div>
+    <div class="bg-teal-900/20 p-5 rounded-xl border border-teal-800/50">
+      <h3 class="text-xl font-bold text-teal-300 mb-3">Conversation habit</h3>
+      <p class="text-sm text-gray-200 italic leading-relaxed">Keep the same chat open and reply with what needs to change: shorter, simpler, warmer, stronger, clearer, cheaper, or more direct.</p>
+      <p class="text-sm text-teal-100/80 mt-3 leading-relaxed">This helps the helper improve the same answer instead of guessing again from scratch.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
+      <span class="bg-teal-900/50 text-teal-300 p-2 rounded-lg mr-3 border border-teal-800">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" x2="8.12" y1="4" y2="15.88"/><line x1="14.47" x2="20" y1="14.48" y2="20"/><line x1="8.12" x2="12" y1="8.12" y2="12"/></svg>
+      </span>
+      The 4 Ways to Push the Answer Forward
+    </h3>
+    <div class="space-y-4">
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">1</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">Change the tone</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">If it sounds cold, awkward, or robotic, say so directly. Ask for warmer, calmer, friendlier, firmer, or more natural wording.</p>
+        </div>
+      </div>
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">2</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">Change the facts or limits</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">If the answer assumes too much money, time, tools, or experience, correct it. Tell it your real limits and ask for a version that fits.</p>
+        </div>
+      </div>
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">3</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">Change the length</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">If it is too long, cut it down. If it is too thin, ask it to add more depth, examples, or steps.</p>
+        </div>
+      </div>
+      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">4</div>
+        <div>
+          <h4 class="text-white font-bold text-lg mb-1">Change the direction</h4>
+          <p class="text-sm text-gray-400 leading-relaxed">If the whole answer is moving the wrong way, ask for new angles, fresh options, or a different approach completely.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-900/70 p-6 rounded-2xl border border-gray-800">
+    <h3 class="text-2xl font-bold text-white mb-4">The mindset shift</h3>
+    <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+      <p><strong class="text-white">Do not ask once and judge forever.</strong> The first answer is a draft, not a final verdict.</p>
+      <p><strong class="text-white">Do not throw away useful context.</strong> Staying in the same chat helps the helper remember what you already said.</p>
+      <p><strong class="text-white">Do not hide your reaction.</strong> If something feels wrong, say what feels wrong and what should change.</p>
+      <p><strong class="text-white">Think like an editor.</strong> You are not just receiving answers. You are shaping them.</p>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-2">The Pushback Vault</h3>
+    <p class="text-sm text-gray-400 mb-6">Use these follow-up lines to improve a draft instead of starting over.</p>
+    <div class="space-y-5">
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-teal-500 shadow-lg">
+        <span class="text-xs text-teal-400 uppercase font-bold tracking-widest bg-teal-900/30 px-2 py-1 rounded">Make It Simpler</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"This is too heavy. Rewrite it in simpler words and make it easier for a beginner to understand."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> explanations, instructions, learning topics, and anything that feels too dense.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-cyan-500 shadow-lg">
+        <span class="text-xs text-cyan-400 uppercase font-bold tracking-widest bg-cyan-900/30 px-2 py-1 rounded">Make It Shorter</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"Cut this down. Keep only the most important part and give it to me in 3 short points."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> long answers, summaries, messages, and anything you need quickly.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg">
+        <span class="text-xs text-blue-400 uppercase font-bold tracking-widest bg-blue-900/30 px-2 py-1 rounded">Make It Fit My Reality</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"This assumes I have more money and time than I actually do. Rewrite it for a low-budget version I can start this week."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> plans, business ideas, routines, and any answer that feels unrealistic.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-emerald-500 shadow-lg">
+        <span class="text-xs text-emerald-400 uppercase font-bold tracking-widest bg-emerald-900/30 px-2 py-1 rounded">Give Me Options</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"I do not love this version. Give me 3 different options: one safe, one bold, and one creative."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> writing, ideas, planning, branding, and decision making.</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-fuchsia-500 shadow-lg">
+        <span class="text-xs text-fuchsia-400 uppercase font-bold tracking-widest bg-fuchsia-900/30 px-2 py-1 rounded">Fix One Part</span>
+        <p class="text-white italic text-lg leading-relaxed mt-3 mb-3">"The beginning is good, but the middle feels weak. Rewrite only that part and make it clearer."</p>
+        <p class="text-sm text-gray-500"><strong>Best for:</strong> messages, pitches, essays, proposals, and any answer that is partly right.</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold text-white mb-5">Everyday moments where this helps a lot</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a message is almost right</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Instead of asking for a brand-new message, tell it what to soften, shorten, or strengthen.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When a plan feels unrealistic</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Push back and explain your real limits so the answer becomes more useful for your actual life.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When an explanation still feels confusing</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Ask it to explain one step again in simpler words instead of discarding the whole answer.</p>
+      </div>
+      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50">
+        <h4 class="text-lg font-bold text-teal-300 mb-2">When you want better ideas</h4>
+        <p class="text-sm text-gray-400 leading-relaxed">Ask for different angles in the same chat so the ideas keep improving instead of restarting from scratch.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-blue-900/20 border border-blue-800/40 p-5 rounded-2xl">
+    <h4 class="text-blue-300 font-bold mb-3 text-lg">One quiet advantage people miss</h4>
+    <p class="text-sm text-blue-100/80 leading-relaxed mb-3">The helper remembers the conversation. That means your short follow-up messages can still be powerful.</p>
+    <ul class="text-sm text-blue-100 space-y-2 list-disc pl-5">
+      <li>"Make it warmer."</li>
+      <li>"Now shorten it."</li>
+      <li>"Give me a version for WhatsApp."</li>
+      <li>"Keep everything but remove the expensive part."</li>
+    </ul>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <div class="bg-orange-900/20 p-5 rounded-xl border border-orange-800/50">
+      <h4 class="text-orange-400 font-bold mb-2 flex items-center text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Common Mistake
+      </h4>
+      <p class="text-sm text-orange-200/80 leading-relaxed">People often think a weak first answer means the tool has failed. In many cases, it only means the next instruction is needed.</p>
+    </div>
+    <div class="bg-gray-800/50 p-5 rounded-xl border border-gray-700">
+      <h4 class="text-gray-200 font-bold mb-2 flex items-center text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Quick Rescue
+      </h4>
+      <ul class="text-sm text-gray-400 space-y-2">
+        <li><strong class="text-white">It feels too generic:</strong> ask for more detail or a version tailored to your situation.</li>
+        <li><strong class="text-white">It feels too formal:</strong> ask for a more natural and human tone.</li>
+        <li><strong class="text-white">It misses your reality:</strong> add your true limits and ask for a rewrite.</li>
+        <li><strong class="text-white">It is partly right:</strong> ask it to fix only the weak section.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10 pt-10 border-t border-gray-800 border-dashed">
+    <h3 class="text-3xl font-extrabold text-white mb-6">Real-Life Impact</h3>
+    <div class="space-y-5 text-gray-400 leading-relaxed">
+      <p>When you learn to stay in the conversation, you become much more efficient. You stop wasting energy on restarts and begin improving what is already there.</p>
+      <p>This can help you write faster, think better, learn with less frustration, and get answers that feel more personal and useful.</p>
+      <p>More than anything, it teaches you that strong results often come from guidance, not from a perfect first attempt.</p>
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-br from-teal-900/40 to-gray-900 p-6 rounded-2xl border border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.1)] mt-8">
+    <div class="flex items-center space-x-3 mb-4 border-b border-teal-800/50 pb-3">
+      <div class="bg-teal-500 text-gray-900 font-extrabold px-3 py-1 rounded text-sm uppercase tracking-widest shadow-lg">Practice</div>
+      <h3 class="text-2xl font-bold text-teal-300">Keep the Chat Alive</h3>
+    </div>
+    <p class="text-teal-50 leading-relaxed mb-5 text-lg">Try this now with a simple real example.</p>
+    <div class="space-y-4 text-teal-100 font-medium">
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
+        <p class="pt-1">Ask for something ordinary, like a message, a short plan, or a quick explanation.</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
+        <p class="pt-1">Read the first answer and notice what feels off.</p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
+        <p class="pt-1">Reply in the same chat with one clear improvement, such as: <strong class="text-white bg-black/30 px-2 py-1 rounded">"Make it shorter and sound more natural."</strong></p>
+      </div>
+      <div class="flex items-start">
+        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">4</span>
+        <p class="pt-1">If needed, follow up once more with another improvement instead of restarting.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-10 pt-10 border-t border-gray-800 border-dashed pb-20">
+    <h3 class="text-3xl font-extrabold text-white mb-6">Remember This</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-black/40 p-5 rounded-lg border border-gray-800">
+        <strong class="text-teal-400 block mb-2">Do</strong>
+        <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+          <li>Stay in the same chat when the answer is close but not perfect.</li>
+          <li>Say exactly what should change.</li>
+          <li>Use short follow-up lines when they are enough.</li>
+          <li>Think like an editor, not just a receiver.</li>
+        </ul>
+      </div>
+      <div class="bg-black/40 p-5 rounded-lg border border-gray-800">
+        <strong class="text-red-400 block mb-2">Do Not</strong>
+        <ul class="text-sm text-gray-400 space-y-2 list-disc pl-4">
+          <li>Delete the chat too quickly.</li>
+          <li>Assume the first answer must be final.</li>
+          <li>Restart from zero when one follow-up could fix it.</li>
+          <li>Keep quiet about what feels wrong in the answer.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>`;
 
 export const courseData: Tier[] = [
   {
@@ -39,102 +722,8 @@ export const courseData: Tier[] = [
             description: "How to take a picture of your screen and show it to AI so it understands exactly what you need.", 
             progress: 100, 
             completed: true,
-            cheatSheetHtml: `<div class="space-y-10 text-gray-300">
-  <div class="border-b border-gray-800 pb-6">
-    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-500 mb-4 tracking-tight">The Screenshot Superpower</h2>
-    <p class="text-lg leading-relaxed text-gray-400">Typing out a tech problem is a waste of your time. Modern AI doesn't just read—it <strong class="text-teal-300">sees</strong>. By uploading a picture, you bypass the hardest part of problem-solving: explaining the problem. This Lab Note is your ultimate cheat sheet for using images to force the AI to do the heavy lifting.</p>
-  </div>
-  <div>
-    <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
-      <span class="bg-teal-900/50 text-teal-300 p-2 rounded-lg mr-3 border border-teal-800">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </span>
-      The S.U.C. Framework
-    </h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 hover:border-teal-500/30 transition-all">
-        <div class="text-2xl font-black text-teal-500 mb-2">1. Snap</div>
-        <p class="text-sm text-gray-400">Capture the exact error on your screen, or take a clear photo of the physical document or broken item in front of you.</p>
-      </div>
-      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 hover:border-teal-500/30 transition-all">
-        <div class="text-2xl font-black text-teal-500 mb-2">2. Upload</div>
-        <p class="text-sm text-gray-400">Drop the image directly into your AI chat box. (Works on both mobile and laptop).</p>
-      </div>
-      <div class="bg-gray-800/40 p-5 rounded-xl border border-gray-700/50 hover:border-teal-500/30 transition-all">
-        <div class="text-2xl font-black text-teal-500 mb-2">3. Command</div>
-        <p class="text-sm text-gray-400">Add a simple 1-sentence instruction. Tell it what you want it to do with the image. Never leave the text box blank.</p>
-      </div>
-    </div>
-  </div>
-  <div>
-    <h3 class="text-2xl font-bold text-white mb-2">The Prompt Vault</h3>
-    <p class="text-sm text-gray-400 mb-6">Copy and paste these exact templates alongside your images to get instant results.</p>
-    <div class="space-y-5">
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-teal-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-teal-400 uppercase font-bold tracking-widest bg-teal-900/30 px-2 py-1 rounded">Digital Dashboards & Apps</span>
-        </div>
-        <p class="text-white italic text-lg leading-relaxed mb-3">"I am looking at this screen and I am completely stuck. Based on this picture, exactly which button should I click next to achieve [insert your goal]?"</p>
-        <p class="text-sm text-gray-500"><strong>Best for:</strong> Facebook Ads Manager, confusing bank apps, software setup.</p>
-      </div>
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-cyan-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-cyan-400 uppercase font-bold tracking-widest bg-cyan-900/30 px-2 py-1 rounded">The Physical World</span>
-        </div>
-        <p class="text-white italic text-lg leading-relaxed mb-3">"Look at this photo. This [insert item, e.g., generator / car dashboard] is making a weird noise and showing this error. Explain what is broken in very simple English, and tell me the first thing I should do to fix it."</p>
-        <p class="text-sm text-gray-500"><strong>Best for:</strong> Mechanical faults, blinking router lights, home appliances.</p>
-      </div>
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-blue-400 uppercase font-bold tracking-widest bg-blue-900/30 px-2 py-1 rounded">Paperwork & Documents</span>
-        </div>
-        <p class="text-white italic text-lg leading-relaxed mb-3">"Read this physical document. Extract all the important numbers and dates, and rewrite the main point of this paper as a 3-bullet-point summary so a 10-year-old can understand it."</p>
-        <p class="text-sm text-gray-500"><strong>Best for:</strong> Tenancy agreements, tax letters, messy handwritten receipts from the market.</p>
-      </div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-    <div class="bg-orange-900/20 p-5 rounded-xl border border-orange-800/50">
-      <h4 class="text-orange-400 font-bold mb-2 flex items-center text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> The Privacy Rule
-      </h4>
-      <p class="text-sm text-orange-200/80 leading-relaxed">
-        AI saves what you upload. <strong>Never</strong> upload a raw screenshot of your bank account balance, your BVN, your passwords, or your customers' private phone numbers. Always use your phone's photo editor to scribble over sensitive numbers before you upload the image.
-      </p>
-    </div>
-    <div class="bg-gray-800/50 p-5 rounded-xl border border-gray-700">
-      <h4 class="text-gray-200 font-bold mb-2 flex items-center text-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 inline-block"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Quick Fixes
-      </h4>
-      <ul class="text-sm text-gray-400 space-y-2">
-        <li><strong class="text-white">"AI says it can't read the text"</strong>: Your image is too blurry. Wipe your camera lens or zoom in and snap again.</li>
-        <li><strong class="text-white">"AI gives a generic answer"</strong>: You didn't give it a command. Don't just upload the picture—tell it <em>why</em> you uploaded it.</li>
-      </ul>
-    </div>
-  </div>
-  <div class="bg-gradient-to-br from-teal-900/40 to-gray-900 p-6 rounded-2xl border border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.1)] mt-8">
-    <div class="flex items-center space-x-3 mb-4 border-b border-teal-800/50 pb-3">
-      <div class="bg-teal-500 text-gray-900 font-extrabold px-3 py-1 rounded text-sm uppercase tracking-widest shadow-lg">Live Mission</div>
-      <h3 class="text-2xl font-bold text-teal-300">Test Your Superpower</h3>
-    </div>
-    <p class="text-teal-50 leading-relaxed mb-5 text-lg">Knowledge is useless without execution. Let's do this right now.</p>
-    <div class="space-y-4 text-teal-100 font-medium">
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
-        <p class="pt-1">Take a picture of something confusing in your room right now (a label on a product, a gadget's remote control, or a messy drawer).</p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
-        <p class="pt-1">Upload it to your AI.</p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
-        <p class="pt-1">Paste this exact text: <strong class="text-white bg-black/30 px-2 py-1 rounded">"Look at this image. Tell me 3 interesting or useful things I can do with what is in this picture."</strong></p>
-      </div>
-    </div>
-  </div>
-</div>
-`
+            coverImage: "/cover-power-of-screenshots.png",
+            cheatSheetHtml: screenshotLessonHtml
           },
           { 
             id: "topic-2", 
@@ -143,168 +732,9 @@ export const courseData: Tier[] = [
             description: "How to ask for exactly what you want without typing too much.", 
             progress: 100, 
             completed: true,
-            cheatSheetHtml: `<div class="space-y-10 text-gray-300">
-  
-  <div class="border-b border-gray-800 pb-6">
-    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-500 mb-4 tracking-tight">
-      The "Market List" Framework
-    </h2>
-    <p class="text-lg leading-relaxed text-gray-400">
-      Sending AI a lazy prompt like <em>"write an email"</em> is like sending someone to the market with ₦50,000 but no list. You won't get what you actually want. AI is not a mind reader; it is an eager assistant. To get perfect results without typing long, stressful paragraphs, you must master the <strong>Thumbnail Formula: Who, What, How.</strong>
-    </p>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="bg-red-900/20 p-5 rounded-xl border border-red-800/50">
-      <div class="flex items-center space-x-2 mb-3">
-        <span class="text-red-400 font-bold text-lg flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> The Lazy Way</span>
-      </div>
-      <p class="text-sm text-gray-400 mb-3 italic">
-        "Write a message to a customer who owes me money."
-      </p>
-      <div class="bg-black/30 p-2 rounded text-xs text-red-200/70 border-l-2 border-red-800">
-        <strong>Result:</strong> A robotic, aggressive message that sounds like it came from a debt collection agency and ruins your relationship with the customer.
-      </div>
-    </div>
-    
-    <div class="bg-teal-900/20 p-5 rounded-xl border border-teal-800/50">
-      <div class="flex items-center space-x-2 mb-3">
-        <span class="text-teal-400 font-bold text-lg flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-teal-500"><path d="M20 6 9 17l-5-5"/></svg> The Thumbnail Way</span>
-      </div>
-      <p class="text-sm text-gray-400 mb-3 italic">
-        "Act as a friendly business owner. Write a WhatsApp DM to a loyal customer who owes ₦150k. Ask for the money politely but firmly so I can restock. Keep it short, warm, and no big grammar."
-      </p>
-      <div class="bg-black/30 p-2 rounded text-xs text-teal-200/70 border-l-2 border-teal-800">
-        <strong>Result:</strong> A perfect, human-sounding message you can copy, paste, and send immediately.
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
-      <span class="bg-teal-900/50 text-teal-300 p-2 rounded-lg mr-3 border border-teal-800">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-      </span>
-      The 3 Pillars of a Perfect Prompt
-    </h3>
-    <div class="space-y-4">
-      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">1</div>
-        <div>
-          <h4 class="text-white font-bold text-lg mb-1">WHO (Set the Stage)</h4>
-          <p class="text-sm text-gray-400">Give the AI a role. Tell it exactly who it is pretending to be and who it is talking to. <em>(e.g., "Act as an expert accountant explaining taxes to a beginner.")</em></p>
-        </div>
-      </div>
-      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">2</div>
-        <div>
-          <h4 class="text-white font-bold text-lg mb-1">WHAT (The Exact Goal)</h4>
-          <p class="text-sm text-gray-400">Give it the facts. State the specific problem or desired outcome so the AI doesn't have to invent lies. <em>(e.g., "I need a 3-day workout plan because I want to lose weight.")</em></p>
-        </div>
-      </div>
-      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">3</div>
-        <div>
-          <h4 class="text-white font-bold text-lg mb-1">HOW (Build Fences)</h4>
-          <p class="text-sm text-gray-400">Set the tone and put up fences. Tell it what <strong>not</strong> to do. <em>(e.g., "Keep it under 3 paragraphs, do not use corporate jargon, and format it as bullet points.")</em></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <h3 class="text-2xl font-bold text-white mb-2">The Prompt Vault</h3>
-    <p class="text-sm text-gray-400 mb-6">Fill in the brackets and use these templates to get exactly what you want.</p>
-    
-    <div class="space-y-5">
-      
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-teal-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-teal-400 uppercase font-bold tracking-widest bg-teal-900/30 px-2 py-1 rounded">Customer Crisis Control</span>
-        </div>
-        <p class="text-white italic text-[15px] leading-relaxed mb-3">
-          "Act as the manager of a [insert your business type]. Write a WhatsApp DM to a customer who is angry because [insert what went wrong]. Assure them we are fixing it by [insert your solution]. Keep it under 4 sentences. Make the tone deeply apologetic and respectful. Do not use corporate jargon."
-        </p>
-      </div>
-
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-cyan-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-cyan-400 uppercase font-bold tracking-widest bg-cyan-900/30 px-2 py-1 rounded">The Brainstorm Engine</span>
-        </div>
-        <p class="text-white italic text-[15px] leading-relaxed mb-3">
-          "Act as a brilliant business strategist in Nigeria. I want to start a [insert business idea], but I only have [insert your budget/resources]. Give me 5 highly creative, low-cost ways to get my first 10 paying customers. Do not suggest running paid ads. Format the answer as a simple, actionable list."
-        </p>
-      </div>
-
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-blue-400 uppercase font-bold tracking-widest bg-blue-900/30 px-2 py-1 rounded">The "Explain Like I'm 5" Method</span>
-        </div>
-        <p class="text-white italic text-[15px] leading-relaxed mb-3">
-          "Act as a friendly, patient teacher. I am completely new to [insert topic, e.g., real estate investing]. Explain the absolute basics to me using simple, everyday analogies like going to the market. Stop frequently to check if I understand. Do not use any technical words without explaining them first."
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="bg-blue-900/20 border-l-4 border-blue-500 p-5 rounded-r-xl mt-8">
-    <h4 class="text-blue-400 font-bold mb-2 flex items-center text-lg">
-      <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span> The Power of Negative Fences
-    </h4>
-    <p class="text-sm text-blue-200/80 leading-relaxed mb-3">
-      The smartest way to control AI is telling it what it <strong>cannot</strong> do. AI models naturally love to write long, boring essays. You must constrain them.
-    </p>
-    <ul class="text-sm text-blue-100 font-medium space-y-1 list-disc list-inside">
-      <li>"Do not use words like 'delve', 'furthermore', or 'crucial'."</li>
-      <li>"Do not write more than 100 words."</li>
-      <li>"Do not make up facts; if you don't know, say you don't know."</li>
-    </ul>
-  </div>
-
-  <div class="bg-gradient-to-br from-teal-900/40 to-gray-900 p-6 rounded-2xl border border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.1)] mt-8">
-    <div class="flex items-center space-x-3 mb-4 border-b border-teal-800/50 pb-3">
-      <div class="bg-teal-500 text-gray-900 font-extrabold px-3 py-1 rounded text-sm uppercase tracking-widest shadow-lg">Live Mission</div>
-      <h3 class="text-2xl font-bold text-teal-300">Draft Your Perfect Prompt</h3>
-    </div>
-    <p class="text-teal-50 leading-relaxed mb-5 text-lg">
-      Think of a difficult message, email, or planning task you have been avoiding this week. Let the AI do the heavy lifting for you right now.
-    </p>
-    <div class="space-y-4 text-teal-100 font-medium">
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
-        <p class="pt-1">Open your AI chat window.</p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
-        <p class="pt-1">Type your <strong>WHO</strong> (e.g., Act as my personal assistant...)</p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
-        <p class="pt-1">Type your <strong>WHAT</strong> (e.g., I need an email to my boss asking for Friday off because...)</p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">4</span>
-        <p class="pt-1">Type your <strong>HOW</strong> (e.g., Keep it strictly to two paragraphs, sound highly professional but not robotic.)</p>
-      </div>
-      <div class="bg-black/40 p-3 rounded-lg mt-4 text-center text-teal-400 font-bold border border-teal-900/50">
-        Hit send and watch the magic happen.
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-16 pt-10 border-t border-gray-800 border-dashed">
-    <h3 class="text-3xl font-extrabold text-white mb-6">🚨 Deep Dive: The Perfect Prompt Anatomy</h3>
-    <div class="prose prose-invert prose-lg max-w-none prose-p:text-gray-400">
-      <p>In 2023, a junior salesperson at a Lagos real estate firm lost a massive client because of a lazy prompt. They asked the AI to "Write an email to Chief Adebayo pitching the new Ikoyi property." The AI wrote a long, poetic email starting with "Greetings to you, esteemed Sir, I hope this missive finds you well..." Chief Adebayo blocked the number instantly.</p>
-      <p>If that salesperson had used the WHO-WHAT-HOW framework, they would have commanded:</p>
-      <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 my-8 italic text-cyan-100/80">
-        "<strong>[WHO]:</strong> Act as a high-end, confident luxury real estate broker. I am pitching an ultra-wealthy Nigerian billionaire. <strong>[WHAT]:</strong> Write a 3-sentence WhatsApp hook pitching an off-market 5-bedroom penthouse in Ikoyi. Tell him it offers total privacy from the press. <strong>[HOW]:</strong> Tone must be highly exclusive and respectful, but not begging. Start with 'Good evening Chief.' Do not use complex vocabulary. Use a single bullet point for the price."
-      </div>
-      <p>The difference between the two prompts is exactly $15,000 in commission. The WHO gives it a personality. The WHAT gives it a brain. The HOW gives it a leash.</p>
-    </div>
-  </div>
-</div>`
+            videoUrl: "https://youtu.be/SLXuy-QLSzs",
+            coverImage: "/cover-asking-right-questions.png",
+            cheatSheetHtml: askingLessonHtml
           },
           { 
             id: "topic-3", 
@@ -313,158 +743,8 @@ export const courseData: Tier[] = [
             description: "Why talking to AI is a back-and-forth conversation, not a Google search.", 
             progress: 100, 
             completed: true,
-            cheatSheetHtml: `<div class="space-y-10 text-gray-300">
-  
-  <div class="border-b border-gray-800 pb-6">
-    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-500 mb-4 tracking-tight">
-      The Tailor Rule (The Pushback)
-    </h2>
-    <p class="text-lg leading-relaxed text-gray-400">
-      Google is a vending machine—if you get the wrong result, you have to type a brand new search. AI is a conversation. If the first answer it gives you isn't perfect, <strong>never delete the chat</strong>. Treat the AI like a Nigerian tailor: if the suit is too tight on the shoulders, you don't throw it away. You just tell them to adjust the measurements. 
-    </p>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="bg-red-900/20 p-5 rounded-xl border border-red-800/50">
-      <div class="flex items-center space-x-2 mb-3">
-        <span class="text-red-400 font-bold text-lg flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> The Google Hangover</span>
-      </div>
-      <p class="text-sm text-gray-400 mb-3 italic">
-        Asking the AI for a business proposal, getting one that sounds too expensive and uses too much big grammar, getting frustrated, deleting the chat, and trying to write a completely new prompt from scratch.
-      </p>
-      <div class="bg-black/30 p-2 rounded text-xs text-red-200/70 border-l-2 border-red-800">
-        <strong>Result:</strong> Wasted time, frustration, and settling for average results.
-      </div>
-    </div>
-    
-    <div class="bg-teal-900/20 p-5 rounded-xl border border-teal-800/50">
-      <div class="flex items-center space-x-2 mb-3">
-        <span class="text-teal-400 font-bold text-lg flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-teal-500"><path d="M20 6 9 17l-5-5"/></svg> The Thumbnail Pushback</span>
-      </div>
-      <p class="text-sm text-gray-400 mb-3 italic">
-        Reading the expensive proposal and simply replying in the same chat: "This is good, but the budget is too high. Rewrite this using cheaper local materials and make it sound friendlier."
-      </p>
-      <div class="bg-black/30 p-2 rounded text-xs text-teal-200/70 border-l-2 border-teal-800">
-        <strong>Result:</strong> The AI instantly molds the original idea into exactly what you need.
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <h3 class="text-xl font-bold text-teal-400 mb-4 flex items-center">
-      <span class="bg-teal-900/50 text-teal-300 p-2 rounded-lg mr-3 border border-teal-800">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" x2="8.12" y1="4" y2="15.88"/><line x1="14.47" x2="20" y1="14.48" y2="20"/><line x1="8.12" x2="12" y1="8.12" y2="12"/></svg>
-      </span>
-      How to Mold the Clay
-    </h3>
-    <p class="text-sm text-gray-400 mb-5">When the first draft isn't perfect, use one of these three adjustments:</p>
-    
-    <div class="space-y-4">
-      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">1</div>
-        <div>
-          <h4 class="text-white font-bold text-lg mb-1">Adjust the Tone (The Vibe)</h4>
-          <p class="text-sm text-gray-400">"This sounds too robotic. Rewrite it to sound like a warm, modern Nigerian entrepreneur chatting on WhatsApp."</p>
-        </div>
-      </div>
-      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">2</div>
-        <div>
-          <h4 class="text-white font-bold text-lg mb-1">Adjust the Constraints (The Facts)</h4>
-          <p class="text-sm text-gray-400">"Remove the part about using imported salmon. Replace it with local fisherman soup and party jollof."</p>
-        </div>
-      </div>
-      <div class="flex items-start bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
-        <div class="text-2xl font-black text-teal-500 mr-4 mt-1 w-8 text-center">3</div>
-        <div>
-          <h4 class="text-white font-bold text-lg mb-1">Adjust the Length (The Cut)</h4>
-          <p class="text-sm text-gray-400">"This is way too long. My boss won't read this. Cut it down to 3 sharp bullet points."</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <h3 class="text-2xl font-bold text-white mb-2">The Pushback Vault</h3>
-    <p class="text-sm text-gray-400 mb-6">Use these templates to argue with the AI and force it to give you better work.</p>
-    
-    <div class="space-y-5">
-      
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-teal-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-teal-400 uppercase font-bold tracking-widest bg-teal-900/30 px-2 py-1 rounded">The Budget Pivot</span>
-        </div>
-        <p class="text-white italic text-[15px] leading-relaxed mb-3">
-          "This plan is great, but I do not have the money or equipment for this yet. Adjust this entire strategy so I can start tomorrow with zero budget, using only my smartphone and free tools."
-        </p>
-      </div>
-
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-cyan-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-cyan-400 uppercase font-bold tracking-widest bg-cyan-900/30 px-2 py-1 rounded">The Options Command</span>
-        </div>
-        <p class="text-white italic text-[15px] leading-relaxed mb-3">
-          "I don't really like this angle. Give me 3 completely different, highly creative options to choose from. Make one safe, one risky, and one funny."
-        </p>
-      </div>
-
-      <div class="bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xs text-blue-400 uppercase font-bold tracking-widest bg-blue-900/30 px-2 py-1 rounded">The Clarification Check</span>
-        </div>
-        <p class="text-white italic text-[15px] leading-relaxed mb-3">
-          "I understand steps 1 and 3, but I am completely lost on step 2. Break down step 2 for me again in much simpler English."
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="bg-blue-900/20 border-l-4 border-blue-500 p-5 rounded-r-xl mt-8">
-    <h4 class="text-blue-400 font-bold mb-2 flex items-center text-lg">
-      <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/></svg></span> Pro-Tip: The AI Has Memory
-    </h4>
-    <p class="text-sm text-blue-200/80 leading-relaxed mb-3">
-      Because AI is a chat, it remembers everything you said 10 messages ago. When you use the Pushback, you don't need to repeat your "Who, What, How" from the first prompt. You can literally just type: <em>"Make it shorter,"</em> and it knows exactly what "it" is.
-    </p>
-  </div>
-
-  <div class="bg-gradient-to-br from-teal-900/40 to-gray-900 p-6 rounded-2xl border border-teal-500/40 shadow-[0_0_20px_rgba(20,184,166,0.1)] mt-8">
-    <div class="flex items-center space-x-3 mb-4 border-b border-teal-800/50 pb-3">
-      <div class="bg-teal-500 text-gray-900 font-extrabold px-3 py-1 rounded text-sm uppercase tracking-widest shadow-lg">Live Mission</div>
-      <h3 class="text-2xl font-bold text-teal-300">Mold the Clay</h3>
-    </div>
-    <p class="text-teal-50 leading-relaxed mb-5 text-lg">
-      Let's practice pushing back right now.
-    </p>
-    <div class="space-y-4 text-teal-100 font-medium">
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
-        <p class="pt-1">Open your AI and ask it: <strong class="text-white bg-black/30 px-2 py-1 rounded">"Give me a 3-day workout plan to lose weight."</strong></p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
-        <p class="pt-1">Wait for it to give you the first draft (it will probably include gym equipment).</p>
-      </div>
-      <div class="flex items-start">
-        <span class="bg-teal-800/50 text-teal-300 h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
-        <p class="pt-1"><strong>The Pushback:</strong> Reply in the same chat and say: <strong class="text-white bg-black/30 px-2 py-1 rounded">"I don't have access to a gym. Change this entire plan to exercises I can do in my living room without any equipment."</strong></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-16 pt-10 border-t border-gray-800 border-dashed">
-    <h3 class="text-3xl font-extrabold text-white mb-6">🚨 Deep Dive: Chatting Over Searching</h3>
-    <div class="prose prose-invert prose-lg max-w-none prose-p:text-gray-400">
-      <p>The single biggest mistake beginners make is treating ChatGPT like Google Web Search. If a result is bad, they delete the conversation and start over. <strong>Do not restart the chat.</strong> AI models contain a "context window" which acts as short-term memory. Over the course of a long conversation, the AI actually learns your specific taste, your vocabulary, and your goals.</p>
-      <p>A Lagos-based graphic designer was trying to generate ideas for a fintech logo. The AI kept suggesting images of dollar signs and piggy banks.</p>
-      <p>Instead of giving up, she pushed back: <em>"These are too cliché and boring. I want something abstract that represents 'speed' and 'trust' without using obvious money symbols. Avoid green."</em> The next 5 suggestions were breathtakingly modern.</p>
-      <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 my-8 italic text-cyan-100/80">
-        "Think of the AI as a junior intern. If an intern hands you a report and the second paragraph is wrong, you don't fire the intern and hire a new one. You point at the paragraph and say: 'Fix this specific part, make it shorter.' The AI expects you to push back. It enjoys the pushback. Be ruthless in your editing."
-      </div>
-    </div>
-  </div>
-</div>`
+            coverImage: "/cover-chatting-not-searching.png",
+            cheatSheetHtml: chattingLessonHtml
           },
           { 
             id: "topic-4", 
@@ -473,6 +753,7 @@ export const courseData: Tier[] = [
             description: "How to ask AI to explain very hard topics as if you were a 5-year-old.", 
             progress: 0, 
             completed: false,
+            coverImage: "/cover-make-it-simple.png",
             cheatSheetHtml: `<div class="space-y-10 text-gray-300">
   
   <div class="border-b border-gray-800 pb-6">
@@ -624,7 +905,7 @@ export const courseData: Tier[] = [
   </div>
 </div>`
           },
-          { id: "topic-5", number: 5, title: "From Brain to Screen", description: "How to turn your rough, messy ideas into clear, professional text.", progress: 0, completed: false,
+          { id: "topic-5", number: 5, title: "From Brain to Screen", description: "How to turn your rough, messy ideas into clear, professional text.", progress: 0, completed: false, coverImage: "/cover-brain-to-screen.png",
             cheatSheetHtml: `<div class="space-y-10 text-gray-300">
   
   <div class="border-b border-gray-800 pb-6">
@@ -808,8 +1089,8 @@ export const courseData: Tier[] = [
         id: "module-b",
         title: "Module B: Fixing Everyday Problems",
         topics: [
-          { id: "topic-6", number: 6, title: "Clearing Your Emails", description: "Letting AI write, reply to, and sort your daily messages.", progress: 0, completed: false },
-          { id: "topic-7", number: 7, title: "Reading Less, Knowing More", description: "Getting short summaries of long reports or 2-hour YouTube videos.", progress: 65, completed: false },
+          { id: "topic-6", number: 6, title: "Clearing Your Emails", description: "Letting AI write, reply to, and sort your daily messages.", progress: 0, completed: false, coverImage: "/cover-clearing-emails.png" },
+          { id: "topic-7", number: 7, title: "Reading Less, Knowing More", description: "Getting short summaries of long reports or 2-hour YouTube videos.", progress: 65, completed: false, coverImage: "/cover-reading-less.png" },
           { id: "topic-8", number: 8, title: "Your Personal Assistant", description: "Using AI to plan your day, schedule tasks, and organize your life.", progress: 0, completed: false },
           { id: "topic-9", number: 9, title: "Starting from Scratch", description: "How to use AI to get ideas when you are stuck and don't know where to begin.", progress: 0, completed: false },
           { id: "topic-10", number: 10, title: "Fixing Real-Life Issues", description: "Asking AI for help with normal, hands-on tasks, like fixing a broken tap or planning a trip.", progress: 0, completed: false },

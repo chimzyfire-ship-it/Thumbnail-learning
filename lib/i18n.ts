@@ -1,4 +1,4 @@
-// Translation dictionary for Thumbnail Learning
+// Translation dictionary for Aethel Solutions
 // Supports: English (en), Pidgin (pcm), Yoruba (yo), Igbo (ig)
 
 export type Lang = "en" | "pcm" | "yo" | "ig";
@@ -18,6 +18,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "nav.studySpace":  { en: "Study Space", pcm: "Study Space",      yo: "Aaye Kika",        ig: "Ebe Ọmụmụ"         },
   "nav.community":   { en: "Community",  pcm: "Community",  yo: "Àwùjọ",     ig: "Ọha"        },
   "nav.myCourses":   { en: "My Courses", pcm: "My Courses", yo: "Ẹ̀kọ́ Mi",    ig: "Ihe M Na-Amụ" },
+  "nav.support":     { en: "Support",    pcm: "Support",    yo: "Ìrànwọ́",     ig: "Nkwado"    },
   "nav.settings":    { en: "Settings",   pcm: "Settings",   yo: "Ètò",        ig: "Nhazi"      },
   "nav.navigation":  { en: "Navigation", pcm: "Navigation", yo: "Ìlànà",      ig: "Ụzọ"       },
 
@@ -26,7 +27,6 @@ const translations: Record<string, Record<Lang, string>> = {
   "settings.profile":         { en: "Profile",               pcm: "Profile",               yo: "Ìpele",              ig: "Profaịlụ"           },
   "settings.account":         { en: "Account & Security",    pcm: "Account & Security",    yo: "Àkọ́ọ̀lé àti Ààbò",   ig: "Akaụntụ na Nchekwa" },
   "settings.notifications":   { en: "Notifications",         pcm: "Notifications",         yo: "Ìfitónilétí",        ig: "Ọkwa"               },
-  "settings.billing":         { en: "Billing & Subscription",pcm: "Billing & Subscription",yo: "Ìsanwó",             ig: "Ụgwọ"              },
   "settings.logOut":          { en: "Log Out",               pcm: "Log Out",               yo: "Jáde",               ig: "Pụọ"               },
 
   // ─── Profile ─────────────────────────────────────
@@ -84,18 +84,9 @@ const translations: Record<string, Record<Lang, string>> = {
   "notif.achievementUnlocked": { en: "Achievement Unlocked",      pcm: "Achievement Unlocked",                  yo: "Àṣeyọrí Ṣíṣí",                    ig: "Ihe Emere Emere"                 },
   "notif.achievementUnlockedDesc": { en: "Celebrate milestones.", pcm: "Celebrate milestones.",                  yo: "Ṣe ayẹyẹ àmì àṣeyọrí.",           ig: "Mee emume ọkwa."                 },
   "notif.productUpdates": { en: "Product Updates",                 pcm: "Product Updates",                       yo: "Ìmúdójúìwọ̀n Ọja",                 ig: "Mmelite Ngwaahịa"                },
-  "notif.productUpdatesDesc": { en: "News about Thumbnail Learning features.", pcm: "News about Thumbnail Learning features.", yo: "Ìròyìn nípa ẹ̀yà Thumbnail Learning.", ig: "Akụkọ banyere atụmatụ Thumbnail Learning." },
+  "notif.productUpdatesDesc": { en: "News about Aethel Solutions features.", pcm: "News about Aethel Solutions features.", yo: "Ìròyìn nípa ẹ̀yà Aethel Solutions.", ig: "Akụkọ banyere atụmatụ Aethel Solutions." },
   "notif.emailDigest":  { en: "Email Digest",                     pcm: "Email Digest",                          yo: "Àkópọ̀ Ímeèlì",                   ig: "Nchịkọta Email"                  },
   "notif.emailDigestDesc": { en: "Weekly progress summary to email.", pcm: "Weekly summary to your email.", yo: "Àkópọ̀ ọ̀sẹ̀ sí Ímeèlì rẹ.", ig: "Nchịkọta izụ ụka na email gị." },
-
-  // ─── Billing ─────────────────────────────────────
-  "billing.title":     { en: "Billing & Subscription",            pcm: "Billing & Subscription",                yo: "Ìsanwó àti Ìforúkọsílẹ̀",          ig: "Ụgwọ na Ndenye Aha"              },
-  "billing.desc":      { en: "Manage your subscription plan.",     pcm: "Manage your plan.",                     yo: "Ṣàkóso ètò ìsanwó rẹ.",           ig: "Jikwaa atụmatụ ụgwọ gị."         },
-  "billing.freePlan":  { en: "Tier 1 — Free Plan",                pcm: "Tier 1 — Free Plan",                    yo: "Ìpele 1 — Ètò Ọ̀fẹ́",              ig: "Ọkwa 1 — Atụmatụ N'efu"          },
-  "billing.freeDesc":  { en: "Access to beginner-level AI courses",pcm: "Beginner AI courses",                   yo: "Ẹ̀kọ́ AI àkọ́kọ́",                  ig: "Kọọsụ AI maka ndị mbido"         },
-  "billing.used":      { en: "courses used",                      pcm: "courses used",                          yo: "ẹ̀kọ́ tí a ti lò",                 ig: "kọọsụ ejirila"                   },
-  "billing.upgrade":   { en: "Upgrade to Pro",                    pcm: "Upgrade to Pro",                        yo: "Gba Sókè Sí Pro",                  ig: "Kwalite na Pro"                   },
-  "billing.processing":{ en: "Processing...",                     pcm: "Processing...",                         yo: "Ń ṣiṣẹ́...",                       ig: "Na-arụ ọrụ..."                   },
 
   // ─── Common ──────────────────────────────────────
   "common.back":       { en: "Back",                              pcm: "Go Back",                               yo: "Padà",                              ig: "Laghachi"                        },

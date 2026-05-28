@@ -40,14 +40,13 @@ export function SplashScreen() {
       }}
     >
       <img
-        src="/logo.png"
-        alt="Thumbnail Learning"
+        src="/aethel-logo.png"
+        alt="Aethel Solutions"
         style={{
           maxWidth: "220px",
           width: "80%",
           height: "auto",
-          filter: "invert(1) hue-rotate(180deg) drop-shadow(0 0 12px rgba(20,184,166,0.5))",
-          mixBlendMode: "screen",
+          filter: "drop-shadow(0 0 24px rgba(201,168,76,0.35))",
           animation: "splashIn 0.8s ease-out both",
         }}
       />

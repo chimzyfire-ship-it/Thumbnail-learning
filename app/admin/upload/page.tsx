@@ -4,23 +4,31 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BrainCircuit, Upload, CheckCircle2, AlertCircle } from "lucide-react";
+import { courseData } from "@/lib/course-data";
 
-const availableModules = [
-  { id: "module-a", title: "Module A: Talking to AI the Right Way" },
-  { id: "module-b", title: "Module B: Fixing Everyday Problems" },
-  { id: "module-c", title: "Module C: Making It Work for Us (Local Focus)" },
-  { id: "module-d", title: "Module D: Spotting Mistakes and Fixing Them" },
-];
+const availableModules = courseData.flatMap((tier) => tier.modules);
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export default function AdminUploadPage() {
   const [moduleId, setModuleId] = useState("");
+  const [topicId, setTopicId] = useState("");
   const [title, setTitle] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [cheatSheetHtml, setCheatSheetHtml] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const selectedModule = availableModules.find((module) => module.id === moduleId);
+  const selectedTopic = selectedModule?.topics.find((topic) => topic.id === topicId);
+
+  const handleTopicChange = (nextTopicId: string) => {
+    const topic = selectedModule?.topics.find((item) => item.id === nextTopicId);
+
+    setTopicId(nextTopicId);
+    setTitle(topic?.title || "");
+    setVideoUrl(topic?.videoUrl || "");
+    setCheatSheetHtml(topic?.cheatSheetHtml || "");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,21 +37,27 @@ export default function AdminUploadPage() {
 
     const payload = {
       moduleId,
+      topicId,
       title,
       videoUrl,
       cheatSheetHtml,
     };
 
     try {
-      // ── Replace with your Server Action or API route ──
-      // Example: await publishLesson(payload);
-      // For now, simulate a network call:
-      console.log("Publishing lesson:", payload);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch("/api/admin/lessons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Could not publish lesson.");
+      }
 
       setStatus("success");
-      // Reset form
       setModuleId("");
+      setTopicId("");
       setTitle("");
       setVideoUrl("");
       setCheatSheetHtml("");
@@ -68,15 +82,15 @@ export default function AdminUploadPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-white">Admin Upload</h1>
-            <p className="text-muted-foreground text-sm">Publish new lessons to the Thumbnail Learning platform.</p>
+            <p className="text-muted-foreground text-sm">Attach the right video and lab notes to each course lesson.</p>
           </div>
         </div>
 
         {/* Form */}
         <Card className="bg-secondary/20 border-border/50">
           <CardHeader>
-            <CardTitle>New Lesson</CardTitle>
-            <CardDescription>Fill in the details below and hit Publish when ready.</CardDescription>
+            <CardTitle>Course Lesson</CardTitle>
+            <CardDescription>Choose the exact lesson learners should see, then publish the video and notes for it.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -86,7 +100,13 @@ export default function AdminUploadPage() {
                 <label className="text-sm font-medium text-muted-foreground">Select Module</label>
                 <select
                   value={moduleId}
-                  onChange={(e) => setModuleId(e.target.value)}
+                  onChange={(e) => {
+                    setModuleId(e.target.value);
+                    setTopicId("");
+                    setTitle("");
+                    setVideoUrl("");
+                    setCheatSheetHtml("");
+                  }}
                   required
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition appearance-none cursor-pointer"
                 >
@@ -94,6 +114,25 @@ export default function AdminUploadPage() {
                   {availableModules.map((mod) => (
                     <option key={mod.id} value={mod.id}>
                       {mod.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Topic Select */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Select Course Lesson</label>
+                <select
+                  value={topicId}
+                  onChange={(e) => handleTopicChange(e.target.value)}
+                  required
+                  disabled={!selectedModule}
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition appearance-none cursor-pointer disabled:opacity-60"
+                >
+                  <option value="" disabled>{selectedModule ? "Choose a lesson..." : "Choose a module first..."}</option>
+                  {selectedModule?.topics.map((topic) => (
+                    <option key={topic.id} value={topic.id}>
+                      Topic {topic.number}: {topic.title}
                     </option>
                   ))}
                 </select>
@@ -112,19 +151,18 @@ export default function AdminUploadPage() {
                 />
               </div>
 
-              {/* YouTube Embed URL */}
+              {/* YouTube Video URL */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">YouTube Embed URL</label>
+                <label className="text-sm font-medium text-muted-foreground">YouTube Video URL</label>
                 <input
                   type="url"
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
-                  placeholder="https://www.youtube.com/embed/..."
-                  required
+                  placeholder="https://youtu.be/... or https://www.youtube.com/watch?v=..."
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition placeholder:text-muted-foreground/50"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Use the embed URL format: <code className="text-cyan-400 bg-secondary px-1 rounded">https://www.youtube.com/embed/VIDEO_ID</code>
+                  Paste a normal YouTube link, shorts link, share link, or embed link. The platform will place the right video inside the lesson player automatically.
                 </p>
               </div>
 
@@ -136,7 +174,6 @@ export default function AdminUploadPage() {
                   onChange={(e) => setCheatSheetHtml(e.target.value)}
                   placeholder="<h2>Lab Notes</h2><p>Enter your lesson notes in HTML...</p>"
                   rows={12}
-                  required
                   className="w-full px-4 py-3 rounded-xl bg-background border border-border text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition resize-y font-mono placeholder:text-muted-foreground/50"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -155,14 +192,14 @@ export default function AdminUploadPage() {
                     <>Publishing...</>
                   ) : (
                     <>
-                      <Upload className="w-4 h-4" /> Publish Lesson
+                      <Upload className="w-4 h-4" /> Publish to Course
                     </>
                   )}
                 </Button>
 
                 {status === "success" && (
                   <span className="flex items-center gap-2 text-green-500 text-sm font-medium">
-                    <CheckCircle2 className="w-4 h-4" /> Lesson published successfully!
+                    <CheckCircle2 className="w-4 h-4" /> Lesson published successfully.
                   </span>
                 )}
                 {status === "error" && (
@@ -171,6 +208,12 @@ export default function AdminUploadPage() {
                   </span>
                 )}
               </div>
+
+              {selectedTopic && (
+                <p className="text-xs text-muted-foreground">
+                  This will update the lesson learners open from the normal course tab: <span className="text-primary font-semibold">{selectedTopic.title}</span>.
+                </p>
+              )}
             </form>
           </CardContent>
         </Card>

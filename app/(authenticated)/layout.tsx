@@ -5,9 +5,10 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { Bell, ArrowLeft } from "lucide-react";
 import { useApp } from "@/lib/app-context";
 import { useRouter } from "next/navigation";
-
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { FocusProvider } from "@/lib/focus-context";
+import FloatingFocusBubble from "@/components/layout/FloatingFocusBubble";
 
 export default function AuthenticatedLayout({
   children,
@@ -19,22 +20,27 @@ export default function AuthenticatedLayout({
   const init = name ? name.charAt(0).toUpperCase() : "U";
 
   useEffect(() => {
-    // const supabase = createClient();
-    // supabase.auth.getSession().then(({ data: { session } }) => {
-    //   if (!session) {
-    //     router.push("/login");
-    //   }
-    // });
-    // Bypassed for UI preview
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.push("/login");
+      } else {
+        // If logged in but hasn't onboarded, redirect to the wizard
+        if (!localStorage.getItem("aethel_has_onboarded")) {
+          router.push("/onboarding");
+        }
+      }
+    });
   }, [router]);
 
   return (
-    <SidebarProvider>
+    <FocusProvider>
+      <SidebarProvider>
       <AppSidebar />
       <main className="flex flex-1 flex-col min-h-screen relative overflow-hidden bg-background">
         
         {/* Top Navbar Area (Right Side) */}
-        <header className="sticky top-0 z-10 flex h-16 w-full items-center justify-between border-b border-border bg-background px-6">
+        <header className="sticky top-0 z-10 flex h-16 w-full items-center justify-between border-b border-border bg-background px-4 sm:px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="md:hidden" />
             <button
@@ -47,9 +53,8 @@ export default function AuthenticatedLayout({
           </div>
           
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
+            <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Notifications are coming soon" title="Notifications are coming soon">
               <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-2 h-2 w-2 rounded-full bg-primary" />
             </button>
             <div className="h-8 w-8 rounded-full bg-secondary border border-border flex items-center justify-center cursor-pointer overflow-hidden">
               {avatar ? (
@@ -61,8 +66,10 @@ export default function AuthenticatedLayout({
           </div>
         </header>
 
-        <div className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</div>
+        <div className="flex-1 p-4 md:p-8 overflow-y-auto">{children}</div>
+        <FloatingFocusBubble />
       </main>
     </SidebarProvider>
+    </FocusProvider>
   );
 }

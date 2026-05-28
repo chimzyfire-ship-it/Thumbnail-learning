@@ -6,33 +6,42 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2,
-  Clock,
-  Flame,
-  BookMarked,
   ChevronRight,
-  Trophy,
-  Target,
-  Zap,
   Calendar,
   PlayCircle,
+  BookMarked,
 } from "lucide-react";
 import Link from "next/link";
 import { useProgress } from "@/lib/progress-context";
 
+function formatWhen(iso: string) {
+  const time = new Date(iso);
+  const diffMs = Date.now() - time.getTime();
+  const diffMinutes = Math.max(1, Math.floor(diffMs / 60000));
+
+  if (diffMinutes < 60) return `${diffMinutes}m ago`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return `${diffDays}d ago`;
+
+  return time.toLocaleDateString();
+}
+
 export default function LearningPage() {
   const tier1 = courseData[0];
-  const { isTopicStarted, isTopicCompleted, learningStreak, overallProgress, moduleProgress } = useProgress();
+  const { isTopicStarted, isTopicCompleted, learningStreak, overallProgress, moduleProgress, activityLog, totalStudySeconds, continueTopic } = useProgress();
 
   // Calculate live stats
-  const allTopics = tier1.modules.flatMap(m => m.topics);
+  const allTopics = tier1.modules.flatMap(m => m.topics.filter((topic) => Boolean(topic.cheatSheetHtml)));
   const completedTopics = allTopics.filter(t => isTopicCompleted(t.id));
   const inProgressTopics = allTopics.filter(t => isTopicStarted(t.id) && !isTopicCompleted(t.id));
   const remainingTopics = allTopics.length - completedTopics.length - inProgressTopics.length;
-
-  // Since we don't have a backend activity log yet, we show an empty array
-  // We can scale this in Phase 2 with actual database query logs
-  const activityLog: any[] = [];
-  const savedResources: any[] = [];
+  const savedResources: { id: string; title: string; module: string; topicId: string }[] = [];
+  const studyHours = Math.floor(totalStudySeconds / 3600);
+  const studyMinutes = Math.floor((totalStudySeconds % 3600) / 60);
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full p-2 pb-20">
@@ -46,7 +55,7 @@ export default function LearningPage() {
       {/* Learning Path Overview */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold flex items-center gap-2">
-          <Target className="w-5 h-5 text-primary" /> Learning Path
+          <img src="/icon-completed.png" alt="" className="w-6 h-6 object-contain" /> Learning Path
         </h2>
 
         <div className="bg-gradient-to-r from-primary/10 via-secondary/30 to-background rounded-2xl p-6 border border-primary/20">
@@ -60,6 +69,7 @@ export default function LearningPage() {
               <div className="text-4xl font-black text-primary">{overallProgress}%</div>
               <Progress value={overallProgress} className="h-3 w-full [&>div]:bg-cyan-400" />
               <p className="text-xs text-muted-foreground">Overall Tier Progress</p>
+              <p className="text-xs text-cyan-300">{studyHours > 0 ? `${studyHours}h ` : ""}{studyMinutes}m studied so far</p>
             </div>
           </div>
         </div>
@@ -67,8 +77,9 @@ export default function LearningPage() {
         {/* Module Progress Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {tier1.modules.map((mod) => {
+            const readyTopics = mod.topics.filter((topic) => Boolean(topic.cheatSheetHtml));
             const modProg = moduleProgress(mod.id);
-            const completed = mod.topics.filter(t => isTopicCompleted(t.id)).length;
+            const completed = readyTopics.filter(t => isTopicCompleted(t.id)).length;
             return (
               <Card key={mod.id} className="bg-secondary/30 border-border/50 hover:border-primary/30 transition-colors">
                 <CardHeader className="pb-3">
@@ -79,7 +90,7 @@ export default function LearningPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between mb-2 text-xs">
-                    <span className="text-muted-foreground">{completed}/{mod.topics.length} topics</span>
+                    <span className="text-muted-foreground">{completed}/{readyTopics.length} topics</span>
                     <span className="font-bold text-white">{modProg}%</span>
                   </div>
                   <Progress value={modProg} className="h-1.5 [&>div]:bg-cyan-400" />
@@ -96,7 +107,7 @@ export default function LearningPage() {
         {/* Activity Log */}
         <section className="lg:col-span-2 space-y-4">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" /> Activity Log
+            <img src="/icon-streak.png" alt="" className="w-6 h-6 object-contain" /> Activity Log
           </h2>
 
           <Card className="bg-secondary/20 border-border/50 overflow-hidden min-h-[250px] flex items-center justify-center">
@@ -104,24 +115,31 @@ export default function LearningPage() {
               <CardContent className="p-0 w-full">
                 <div className="divide-y divide-border/50">
                   {activityLog.map((entry) => { 
-                    const IconComp = entry.icon;
+                    const topic = allTopics.find((item) => item.id === entry.topicId);
+                    const action = entry.type === "completed" ? "Completed" : entry.type === "resumed" ? "Returned to" : "Started";
                     return (
                       <div key={entry.id} className="flex items-start gap-4 p-4 hover:bg-secondary/30 transition-colors">
                         <div className="mt-1 flex-shrink-0 w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center">
-                          <IconComp className={`w-4 h-4 ${entry.color}`} />
+                          {entry.type === "completed" ? (
+                            <CheckCircle2 className="w-4 h-4 text-green-500" />
+                          ) : entry.type === "resumed" ? (
+                            <PlayCircle className="w-4 h-4 text-cyan-400" />
+                          ) : (
+                            <BookMarked className="w-4 h-4 text-primary" />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-white">
-                            <span className="font-semibold">{entry.action}</span>
+                            <span className="font-semibold">{action}</span>
                             {" "}
-                            <span className="text-cyan-400 font-medium">{entry.topic}</span>
+                            <span className="text-cyan-400 font-medium">{topic?.title || "a lesson"}</span>
                           </p>
-                          {entry.module && (
-                            <p className="text-xs text-muted-foreground mt-0.5">{entry.module}</p>
+                          {topic && (
+                            <p className="text-xs text-muted-foreground mt-0.5">{tier1.modules.find((module) => module.topics.some((item) => item.id === topic.id))?.title}</p>
                           )}
                         </div>
                         <span className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
-                          <Calendar className="w-3 h-3" /> {entry.time}
+                          <Calendar className="w-3 h-3" /> {formatWhen(entry.at)}
                         </span>
                       </div>
                     );
@@ -130,7 +148,7 @@ export default function LearningPage() {
               </CardContent>
             ) : (
               <div className="text-center p-8">
-                 <Clock className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                 <img src="/icon-streak.png" alt="" className="w-12 h-12 mx-auto mb-3 opacity-30" />
                  <p className="text-muted-foreground text-sm">Your learning activity will appear here once you start taking courses.</p>
               </div>
             )}
@@ -140,7 +158,7 @@ export default function LearningPage() {
         {/* Saved/Bookmarked Resources */}
         <section className="space-y-4">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <BookMarked className="w-5 h-5 text-primary" /> Saved
+            <img src="/icon-bookmark.png" alt="" className="w-6 h-6 object-contain" /> Saved
           </h2>
 
           {savedResources.length > 0 ? (
@@ -164,8 +182,8 @@ export default function LearningPage() {
           ) : (
              <Card className="bg-secondary/20 border-border/50 transition-colors">
                 <CardContent className="p-8 text-center">
-                  <BookMarked className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">You haven't bookmarked any tools or sheets yet.</p>
+                  <img src="/icon-bookmark.png" alt="" className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                  <p className="text-xs text-muted-foreground">You haven&apos;t bookmarked any tools or sheets yet.</p>
                 </CardContent>
               </Card>
           )}
@@ -174,7 +192,7 @@ export default function LearningPage() {
           <Card className="bg-secondary/20 border-border/50 mt-6">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold text-white flex items-center gap-2">
-                <Zap className="w-4 h-4 text-primary" /> Quick Stats
+                <img src="/icon-star.png" alt="" className="w-5 h-5 object-contain" /> Quick Stats
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -192,7 +210,11 @@ export default function LearningPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Learning Streak</span>
-                <span className="font-bold text-orange-400 flex items-center gap-1"><Flame className="w-3 h-3" /> {learningStreak} Days</span>
+                <span className="font-bold text-orange-400 flex items-center gap-1"><img src="/icon-streak.png" alt="" className="w-4 h-4 object-contain" /> {learningStreak} Days</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Next Up</span>
+                <span className="font-bold text-cyan-300">{continueTopic?.title || "Start Topic 1"}</span>
               </div>
             </CardContent>
           </Card>

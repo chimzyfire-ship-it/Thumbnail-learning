@@ -11,9 +11,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Thumbnail Learning",
+  title: "Aethel Solutions",
   description:
-    "Learn new skills with easy-to-follow video courses, interactive labs, and hands-on projects. Thumbnail Learning makes it simple.",
+    "Learn with clear lessons, guided practice, and simple step-by-step support from Aethel Solutions Learning.",
 };
 
 export default function RootLayout({
