@@ -45,7 +45,7 @@ export default function StudySpacePage() {
           <button
             key={tab.id}
             onClick={() => switchTab(tab.id)}
-            className={`relative flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-2xl border transition-all duration-200 text-left overflow-hidden ${
+            className={`relative flex items-center gap-2 sm:gap-3 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border transition-all duration-200 text-left overflow-hidden ${
               activeTab === tab.id
                 ? "bg-[#c9a84c]/10 border-[#c9a84c]/40 shadow-[0_0_30px_rgba(201,168,76,0.08)]"
                 : "bg-[#111827] border-[#1f2b3e] hover:border-[#c9a84c]/20 hover:bg-[#c9a84c]/5"
@@ -54,7 +54,7 @@ export default function StudySpacePage() {
             {activeTab === tab.id && (
               <div className="absolute inset-0 bg-gradient-to-r from-[#c9a84c]/5 to-transparent pointer-events-none" />
             )}
-            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shrink-0 transition-all ${
+            <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl overflow-hidden shrink-0 transition-all ${
               activeTab === tab.id ? "shadow-[0_0_20px_rgba(201,168,76,0.3)]" : "opacity-60"
             }`}>
               <img src={tab.icon} alt={tab.label} className="w-full h-full object-cover" />
@@ -63,7 +63,7 @@ export default function StudySpacePage() {
               <div className={`font-bold text-xs sm:text-sm ${activeTab === tab.id ? "text-[#c9a84c]" : "text-white"}`}>
                 {tab.label}
               </div>
-              <div className="hidden text-xs text-[#7a8194] truncate sm:block">{tab.desc}</div>
+              <div className="hidden text-[11px] text-[#7a8194] truncate md:block">{tab.desc}</div>
             </div>
             {activeTab === tab.id && (
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#c9a84c]/60 via-[#c9a84c] to-[#c9a84c]/60" />

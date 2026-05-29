@@ -870,7 +870,7 @@ const courseLessons: Lesson[] = [
   </div>
 
   <div class="mt-16 pt-10 border-t border-gray-800 border-dashed">
-    <h3 class="text-3xl font-extrabold text-white mb-6">🚨 Deep Dive: The Asymmetry of Jargon</h3>
+    <h3 class="text-3xl font-extrabold text-white mb-6">Deep Dive: The Asymmetry of Jargon</h3>
     <div class="prose prose-invert prose-lg max-w-none prose-p:text-gray-400">
       <p>There is an unspoken rule in business: Whosoever controls the vocabulary, controls the negotiation. Lawyers use Latin terms. Doctors use unpronounceable syndromes. Mechanics use made-up engine parts. They do this to create an asymmetry of knowledge, forcing you to trust them blindly because you are too intimidated to ask what "sub-prime amortization" means.</p>
       <p>The <em>"Explain like I'm 5"</em> prompt is the great equalizer. It completely destroys the asymmetry of knowledge.</p>
@@ -1022,7 +1022,7 @@ const courseLessons: Lesson[] = [
   </div>
 
   <div class="mt-16 pt-10 border-t border-gray-800 border-dashed">
-    <h3 class="text-3xl font-extrabold text-white mb-6">🚨 Deep Dive: The Stalled Master's Thesis</h3>
+    <h3 class="text-3xl font-extrabold text-white mb-6">Deep Dive: The Stalled Master's Thesis</h3>
     <div class="prose prose-invert prose-lg max-w-none prose-p:text-gray-400">
       <p>Let's look at what happens when the Brain-Dump technique saves a career. In 2024, a Nigerian postgraduate student in the UK was 3 months behind on her Master's thesis regarding "The Impact of Fintech on Rural Agriculture in Nigeria." She had done all the interviews, read 40 papers, and collected all the data. But sitting down to write the 15,000-word dissertation felt paralyzing. She stared at Microsoft Word for weeks.</p>
       <p>She tried to write the "Introduction" perfectly. Every sentence felt wrong. She was experiencing severe "Blank Canvas Syndrome."</p>

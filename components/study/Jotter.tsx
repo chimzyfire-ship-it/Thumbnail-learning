@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Plus, Search, Trash2, Save } from "lucide-react";
+import { Plus, Search, Trash2, Save, ChevronLeft } from "lucide-react";
 
 interface Note {
   id: string;
@@ -45,7 +45,7 @@ export default function Jotter() {
     if (loaded.length === 0) {
       const welcome: Note = {
         id: crypto.randomUUID(),
-        title: "Welcome to My Jotter 📝",
+        title: "Welcome to My Jotter",
         content: "This is your personal notebook. Notes are saved automatically as you type.\n\nUse this space to:\n- Write lecture notes\n- Plan essays and assignments\n- Jot down ideas\n- Create study summaries",
         updatedAt: new Date().toISOString(),
       };
@@ -99,9 +99,9 @@ export default function Jotter() {
   }
 
   return (
-    <div className="flex gap-0 h-[calc(100vh-280px)] min-h-[520px] rounded-2xl border border-[#1f2b3e] overflow-hidden">
-      {/* Sidebar */}
-      <div className="w-72 shrink-0 flex flex-col bg-[#080c16] border-r border-[#1f2b3e]">
+    <div className="flex gap-0 h-[calc(100vh-220px)] min-h-[520px] rounded-2xl border border-[#1f2b3e] overflow-hidden md:h-[calc(100vh-280px)] md:min-h-[540px]">
+      {/* Sidebar - note list */}
+      <div className={`w-full md:w-72 shrink-0 flex flex-col bg-[#080c16] border-r border-[#1f2b3e] ${activeId ? "hidden md:flex" : "flex"}`}>
         <div className="p-4 border-b border-[#1f2b3e] flex items-center justify-between">
           <span className="font-bold text-white">Notes</span>
           <button
@@ -128,7 +128,6 @@ export default function Jotter() {
             <p className="text-xs text-[#7a8194] text-center p-4">No notes found</p>
           )}
           {filtered.map(note => (
-            // div instead of button to avoid nested <button> HTML violation
             <div
               key={note.id}
               role="button"
@@ -157,14 +156,23 @@ export default function Jotter() {
       </div>
 
       {/* Editor */}
-      <div className="flex-1 flex flex-col bg-[#0a0e1a]">
+      <div className={`flex-1 flex flex-col bg-[#0a0e1a] ${activeId ? "flex" : "hidden md:flex"}`}>
         {activeNote ? (
           <>
-            <div className="px-8 pt-8 pb-4 border-b border-[#1f2b3e] flex items-center gap-4">
+            <div className="px-4 md:px-8 pt-4 md:pt-8 pb-4 border-b border-[#1f2b3e] flex items-center gap-3 sm:gap-4">
+              {/* Back button on mobile only */}
+              <button
+                onClick={() => setActiveId(null)}
+                className="md:hidden p-1.5 rounded-lg bg-[#111827] border border-[#1f2b3e] text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
+                title="Back to notes list"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
               <input
                 value={activeNote.title}
                 onChange={e => updateActive("title", e.target.value)}
-                className="flex-1 bg-transparent text-2xl font-bold text-white focus:outline-none placeholder:text-[#7a8194]/40"
+                className="flex-1 bg-transparent text-xl md:text-2xl font-bold text-white focus:outline-none placeholder:text-[#7a8194]/40"
                 placeholder="Note title..."
               />
               <div className="flex items-center gap-2 text-xs text-[#7a8194] shrink-0">
@@ -173,18 +181,18 @@ export default function Jotter() {
                     <Save className="w-3 h-3" /> Saved
                   </span>
                 )}
-                <span>{formatWhen(activeNote.updatedAt)}</span>
+                <span className="hidden sm:inline">{formatWhen(activeNote.updatedAt)}</span>
               </div>
             </div>
             <textarea
               value={activeNote.content}
               onChange={e => updateActive("content", e.target.value)}
               placeholder="Start typing your notes... Ideas, summaries, plans — anything goes."
-              className="flex-1 w-full px-8 py-6 bg-transparent text-[16px] leading-relaxed text-[#d4d8e0] focus:outline-none resize-none placeholder:text-[#7a8194]/30 font-mono"
+              className="flex-1 w-full px-4 md:px-8 py-4 md:py-6 bg-transparent text-[15px] md:text-[16px] leading-relaxed text-[#d4d8e0] focus:outline-none resize-none placeholder:text-[#7a8194]/30 font-mono"
             />
-            <div className="px-8 py-3 border-t border-[#1f2b3e] flex items-center justify-between text-xs text-[#7a8194]">
+            <div className="px-4 md:px-8 py-3 border-t border-[#1f2b3e] flex items-center justify-between text-[11px] md:text-xs text-[#7a8194]">
               <span>{activeNote.content.split(/\s+/).filter(Boolean).length} words · {activeNote.content.length} chars</span>
-              <span>Auto-saved to your browser</span>
+              <span>Auto-saved to browser</span>
             </div>
           </>
         ) : (

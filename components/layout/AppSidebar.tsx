@@ -55,20 +55,20 @@ export function AppSidebar() {
       collapsible="icon"
       className="border-r border-sidebar-border bg-[linear-gradient(180deg,rgba(8,12,22,0.98)_0%,rgba(10,14,26,0.96)_100%)] shadow-[0_0_40px_rgba(0,0,0,0.22)]"
     >
-      <SidebarHeader className="relative flex h-24 items-center justify-center border-b border-border px-5 py-4 group-data-[collapsible=icon]:px-0">
+      <SidebarHeader className="relative flex h-16 items-center justify-center border-b border-border px-5 py-2 group-data-[collapsible=icon]:px-0">
         <Link
           href="/"
-          className="group/logo flex w-full items-center gap-4 overflow-hidden px-1 transition-all duration-300 ease-out group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+          className="group/logo flex w-full items-center gap-2.5 overflow-hidden px-1 transition-all duration-300 ease-out group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
         >
           <img
             src="/aethel-logo.png"
             alt="Aethel Solutions"
-            className="h-[4.5rem] w-[4.5rem] shrink-0 object-contain transition-all duration-300 ease-out group-hover/logo:scale-[1.03] group-data-[collapsible=icon]:h-12 group-data-[collapsible=icon]:w-12"
-            style={{ filter: "drop-shadow(0 6px 18px rgba(201,168,76,0.38))" }}
+            className="h-11 w-11 shrink-0 object-contain transition-all duration-300 ease-out group-hover/logo:scale-[1.03] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9"
+            style={{ filter: "drop-shadow(0 4px 10px rgba(201,168,76,0.3))" }}
           />
           <div className="flex min-w-0 flex-col justify-center overflow-hidden leading-none transition-all duration-300 ease-out group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:translate-x-2 group-data-[collapsible=icon]:opacity-0">
-            <span className="whitespace-nowrap text-2xl font-extrabold tracking-[0.1em] text-[#c9a84c]">Aethel</span>
-            <span className="mt-1.5 whitespace-nowrap text-[13px] uppercase tracking-[0.4em] text-[#c9a84c]/72">Solutions</span>
+            <span className="whitespace-nowrap text-lg font-extrabold tracking-[0.1em] text-[#c9a84c]">Aethel</span>
+            <span className="mt-0.5 whitespace-nowrap text-[10px] uppercase tracking-[0.4em] text-[#c9a84c]/72">Solutions</span>
           </div>
         </Link>
 

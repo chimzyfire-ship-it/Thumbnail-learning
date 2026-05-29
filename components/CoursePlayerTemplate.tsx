@@ -154,7 +154,7 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
   const completedModuleTitle = moduleJustCompleted ? getModuleTitle(moduleJustCompleted) : null;
 
   return (
-    // ✨ Split-Screen Magic: 50% Video+Progress / 50% Notes+Lessons on Desktop (xl)
+    // Split-Screen Magic: 50% Video+Progress / 50% Notes+Lessons on Desktop (xl)
     <div className="flex flex-col xl:flex-row gap-6 xl:gap-8 w-full">
 
       {/* ═══ MODULE COMPLETION CELEBRATION ═══ */}
