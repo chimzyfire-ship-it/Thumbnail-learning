@@ -27,21 +27,23 @@ export default function CoursesPage() {
     <div className="flex flex-col gap-8 sm:gap-10 max-w-6xl mx-auto w-full p-0 sm:p-2 pb-20">
       
       {/* Tier Header */}
-      <div className="bg-gradient-to-r from-primary/10 via-secondary/30 to-background rounded-3xl p-5 sm:p-8 border border-primary/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none">
-          <img src="/icon-brain.png" alt="" className="w-64 h-64 opacity-40" />
+      <div className="bg-gradient-to-r from-primary/10 via-secondary/20 to-background rounded-2xl p-4 sm:p-5 border border-primary/20 relative overflow-hidden max-w-xl">
+        <div className="absolute -top-4 -right-4 opacity-5 pointer-events-none">
+          <img src="/icon-brain.png" alt="" className="w-32 h-32 opacity-20" />
         </div>
         
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-medium mb-4">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Active Tier
+        <div className="relative z-10 flex flex-col gap-2">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Active Tier
+            </div>
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
             {tier1.title}
           </h1>
-          <p className="text-base sm:text-xl text-muted-foreground leading-relaxed">
-            <strong className="text-[#c9a84c]">Focus:</strong> {tier1.focus}
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            <strong className="text-[#c9a84c] font-semibold">Focus:</strong> {tier1.focus}
           </p>
         </div>
       </div>
@@ -68,29 +70,58 @@ export default function CoursesPage() {
                 const ready = Boolean(topic.cheatSheetHtml);
                 const canOpen = unlocked && ready;
                 
+                if (!canOpen) {
+                  return (
+                    <div className="flex flex-col gap-3 h-full group" key={topic.id}>
+                      {/* Card Content (Muted & Grayscale to prevent bleed/clashing) */}
+                      <Card
+                        className="bg-secondary/15 border-border/30 flex-1 flex flex-col overflow-hidden opacity-40 grayscale transition-all duration-300 pointer-events-none select-none"
+                      >
+                        {/* Cover Photo */}
+                        <div className="h-40 bg-gradient-to-br from-secondary/50 to-background/50 w-full border-b border-border/30 relative overflow-hidden flex items-center justify-center">
+                          {topic.coverImage ? (
+                            <img src={topic.coverImage} alt={topic.title} className="absolute inset-0 w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-4xl font-black text-muted-foreground/10">{topic.number}</span>
+                          )}
+                        </div>
+                        
+                        <CardContent className="p-5 flex-1 flex flex-col justify-between">
+                          <div>
+                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/50 mb-2 block">
+                              Topic {topic.number}
+                            </span>
+                            <h3 className="text-lg font-bold text-white/70 mb-2 leading-tight">
+                              {topic.title}
+                            </h3>
+                            <p className="text-sm text-muted-foreground/50 line-clamp-3">
+                              {topic.description}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Obvious Lock/Status Bubble Positioned Under the Card */}
+                      {ready ? (
+                        <div className="bg-[#1f1a10] border border-[#c9a84c]/20 text-[#c9a84c] text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 text-center shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+                          <Lock className="w-3.5 h-3.5 text-[#c9a84c] flex-shrink-0 animate-pulse" />
+                          <span>Complete the previous topic to unlock</span>
+                        </div>
+                      ) : (
+                        <div className="bg-[#10141d] border border-[#1f2b3e]/60 text-muted-foreground/80 text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 text-center shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+                          <Lock className="w-3.5 h-3.5 text-muted-foreground/50 flex-shrink-0" />
+                          <span>Coming Soon</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
                 return (
                   <Card
                     key={topic.id}
-                    className={`group bg-secondary/30 border-border/50 transition-all duration-300 flex flex-col overflow-hidden h-full relative ${
-                      canOpen
-                        ? "hover:bg-secondary/60 hover:border-primary/50 cursor-default"
-                        : "opacity-60 cursor-not-allowed"
-                    }`}
+                    className="group bg-secondary/30 border-border/50 transition-all duration-300 flex flex-col overflow-hidden h-full relative hover:bg-secondary/60 hover:border-primary/50 cursor-default"
                   >
-                    {!ready && (
-                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/65 rounded-[inherit]">
-                        <Lock className="w-8 h-8 text-[#c9a84c]/70 mb-2" />
-                        <p className="text-xs text-[#c9a84c]/80 font-semibold text-center px-4">Coming soon</p>
-                      </div>
-                    )}
-
-                    {ready && !unlocked && (
-                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 rounded-[inherit]">
-                        <Lock className="w-8 h-8 text-[#c9a84c]/70 mb-2" />
-                        <p className="text-xs text-[#c9a84c]/70 font-semibold text-center px-4">Complete the previous lesson to unlock</p>
-                      </div>
-                    )}
-
                     {/* Cover Photo */}
                     <div className="h-40 bg-gradient-to-br from-secondary to-background w-full border-b border-border/50 relative overflow-hidden flex items-center justify-center">
                        {topic.coverImage ? (
@@ -139,23 +170,15 @@ export default function CoursesPage() {
                           <div className="h-1.5" /> // Spacer
                         )}
                         
-                        {canOpen ? (
-                          <Link href={`/learn/${topic.id}`} passHref legacyBehavior>
-                            <Button 
-                              variant={completed ? "outline" : isStarted ? "default" : "secondary"}
-                              className={`w-full justify-between group-hover:shadow-lg transition-all ${isStarted ? 'bg-[#c9a84c] hover:bg-[#d4b95e] text-[#0a0e1a] font-semibold' : ''}`}
-                            >
-                              <span>{completed ? "Review Topic" : isStarted ? "Resume Learning" : "Start Topic"}</span>
-                              <ChevronRight className="w-4 h-4" />
-                            </Button>
-                          </Link>
-                        ) : (
-                          <Button variant="secondary" className="w-full justify-between opacity-50" disabled>
-                            <Lock className="w-4 h-4" />
-                            <span>{ready ? "Locked" : "Coming Soon"}</span>
-                            <span />
+                        <Link href={`/learn/${topic.id}`} passHref legacyBehavior>
+                          <Button 
+                            variant={completed ? "outline" : isStarted ? "default" : "secondary"}
+                            className={`w-full justify-between group-hover:shadow-lg transition-all ${isStarted ? 'bg-[#c9a84c] hover:bg-[#d4b95e] text-[#0a0e1a] font-semibold' : ''}`}
+                          >
+                            <span>{completed ? "Review Topic" : isStarted ? "Resume Learning" : "Start Topic"}</span>
+                            <ChevronRight className="w-4 h-4" />
                           </Button>
-                        )}
+                        </Link>
                       </div>
                     </CardContent>
                   </Card>

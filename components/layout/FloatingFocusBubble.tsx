@@ -31,7 +31,7 @@ export default function FloatingFocusBubble() {
               <Timer className="w-5 h-5 text-[#c9a84c]" />
             </div>
             <div>
-              <p className="font-bold text-white text-sm">Session complete! 🎉</p>
+              <p className="font-bold text-white text-sm">Session complete!</p>
               <p className="text-xs text-[#7a8194]">Add a topic to log this session</p>
             </div>
             <button onClick={dismissLog} className="ml-auto text-[#7a8194] hover:text-white">
@@ -128,7 +128,7 @@ export default function FloatingFocusBubble() {
           {/* Topic */}
           {topic && (
             <div className="mb-3 px-2.5 py-1.5 bg-[#c9a84c]/10 border border-[#c9a84c]/20 rounded-lg">
-              <p className="text-xs text-[#c9a84c] font-semibold truncate">📚 {topic}</p>
+              <p className="text-xs text-[#c9a84c] font-semibold truncate">{topic}</p>
             </div>
           )}
 
