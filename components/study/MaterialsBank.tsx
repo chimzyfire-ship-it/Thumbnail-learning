@@ -140,7 +140,7 @@ function PreviewModal({ item, onClose }: { item: Material; onClose: () => void }
         style={{ maxHeight: "92vh" }}>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#1f2b3e] shrink-0">
+        <div className="flex items-center gap-3 border-b border-[#1f2b3e] px-3.5 py-3.5 sm:px-5">
           <div className="w-8 h-8 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center shrink-0">
             <CategoryIcon cat={item.category} className="w-4 h-4" />
           </div>
@@ -148,15 +148,15 @@ function PreviewModal({ item, onClose }: { item: Material; onClose: () => void }
             <p className="font-semibold text-white text-sm truncate">{item.name}</p>
             <p className="text-[11px] text-[#7a8194] uppercase tracking-wider">{item.category}{item.size ? ` · ${item.size}` : ""}</p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex shrink-0 items-center gap-2">
             <a href={src} download={item.category !== "link" ? item.name : undefined}
               target={item.category === "link" ? "_blank" : undefined} rel="noopener noreferrer"
-              className="text-xs bg-[#111827] border border-[#1f2b3e] hover:border-[#c9a84c]/40 text-[#c9a84c] px-3 py-1.5 rounded-lg font-semibold transition-colors flex items-center gap-1.5">
+              className="phone-tap flex items-center gap-1.5 rounded-lg border border-[#1f2b3e] bg-[#111827] px-2.5 py-1.5 text-xs font-semibold text-[#c9a84c] transition-colors hover:border-[#c9a84c]/40 sm:px-3">
               <ExternalLink className="w-3.5 h-3.5" />
-              {item.category === "link" ? "Open" : "Download"}
+              <span className="hidden sm:inline">{item.category === "link" ? "Open" : "Download"}</span>
             </a>
             <button onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-[#111827] border border-[#1f2b3e] text-[#7a8194] hover:text-white flex items-center justify-center transition-colors">
+              className="phone-tap flex h-9 w-9 items-center justify-center rounded-lg border border-[#1f2b3e] bg-[#111827] text-[#7a8194] transition-colors hover:text-white sm:h-8 sm:w-8">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -183,7 +183,7 @@ function PreviewModal({ item, onClose }: { item: Material; onClose: () => void }
               <div className="w-24 h-24 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20 flex items-center justify-center">
                 <Music className="w-10 h-10 text-[#c9a84c]" />
               </div>
-              <p className="text-white font-bold text-lg text-center">{item.name}</p>
+              <p className="text-center text-lg font-bold text-white">{item.name}</p>
               <audio controls src={src} className="w-full max-w-md" style={{ colorScheme: "dark" }} />
             </div>
           )}
@@ -724,21 +724,21 @@ export default function MaterialsBank() {
       )}
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full flex-1 sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7a8194]" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search materials..."
             className="w-full bg-[#111827] border border-[#1f2b3e] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#c9a84c]/40 placeholder:text-[#7a8194]" />
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <input ref={fileRef} type="file" accept={ACCEPT} multiple className="hidden" onChange={handleFileInput} />
           <button onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-2 bg-[#111827] border border-[#1f2b3e] hover:border-[#c9a84c]/40 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+            className="phone-tap flex items-center justify-center gap-2 rounded-xl border border-[#1f2b3e] bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:border-[#c9a84c]/40">
             <Upload className="w-4 h-4 text-[#c9a84c]" />
             Add Files
           </button>
           <button onClick={() => setShowAddLink(!showAddLink)}
-            className="flex items-center gap-2 bg-[#c9a84c] hover:bg-[#d4b95e] text-[#0a0e1a] px-4 py-2.5 rounded-xl text-sm font-bold transition-colors">
+            className="phone-tap flex items-center justify-center gap-2 rounded-xl bg-[#c9a84c] px-4 py-2.5 text-sm font-bold text-[#0a0e1a] transition-colors hover:bg-[#d4b95e]">
             <Plus className="w-4 h-4" /> Save Link
           </button>
         </div>
@@ -757,7 +757,7 @@ export default function MaterialsBank() {
 
       {/* Add Link Form */}
       {showAddLink && (
-        <div className="bg-[#111827] border border-[#c9a84c]/20 rounded-2xl p-5 space-y-3 animate-in slide-in-from-top-2 duration-200">
+        <div className="phone-card space-y-3 rounded-2xl border border-[#c9a84c]/20 bg-[#111827] p-4 animate-in slide-in-from-top-2 duration-200 sm:p-5">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-white">Save a Link</h3>
             <button onClick={() => setShowAddLink(false)} className="text-[#7a8194] hover:text-white"><X className="w-4 h-4" /></button>
@@ -768,21 +768,21 @@ export default function MaterialsBank() {
             className="w-full bg-[#0a0e1a] border border-[#1f2b3e] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#c9a84c]/40 placeholder:text-[#7a8194]" />
           <input value={linkDesc} onChange={e => setLinkDesc(e.target.value)} placeholder="Why are you saving this?"
             className="w-full bg-[#0a0e1a] border border-[#1f2b3e] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#c9a84c]/40 placeholder:text-[#7a8194]" />
-          <button onClick={addLink} className="bg-[#c9a84c] hover:bg-[#d4b95e] text-[#0a0e1a] font-bold px-6 py-2.5 rounded-xl text-sm transition-colors">Save Link</button>
+          <button onClick={addLink} className="phone-tap w-full rounded-xl bg-[#c9a84c] px-6 py-2.5 text-sm font-bold text-[#0a0e1a] transition-colors hover:bg-[#d4b95e] sm:w-auto">Save Link</button>
         </div>
       )}
 
       {/* ── PENDING UPLOADS AREA ── */}
       {pendingFiles.length > 0 && (
         <div className="bg-[#111827]/80 border border-[#c9a84c]/20 rounded-2xl p-4 sm:p-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center justify-between border-b border-[#1f2b3e] pb-3 shrink-0">
+          <div className="flex shrink-0 flex-col gap-3 border-b border-[#1f2b3e] pb-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="font-bold text-white text-base">Ready to Save</h3>
               <p className="text-xs text-[#7a8194] mt-0.5">These files won&apos;t disappear—click Save to store them securely in your account.</p>
             </div>
             {pendingFiles.filter(p => p.status === "idle" || p.status === "error").length > 1 && (
               <button onClick={saveAllPending}
-                className="bg-[#c9a84c] hover:bg-[#d4b95e] text-[#0a0e1a] font-bold px-4 py-2 rounded-xl text-xs transition-colors flex items-center gap-1.5 shadow-md">
+                className="phone-tap flex items-center justify-center gap-1.5 rounded-xl bg-[#c9a84c] px-4 py-2 text-xs font-bold text-[#0a0e1a] shadow-md transition-colors hover:bg-[#d4b95e]">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 Save All ({pendingFiles.filter(p => p.status === "idle" || p.status === "error").length})
               </button>
@@ -796,7 +796,7 @@ export default function MaterialsBank() {
 
               return (
                 <div key={pending.id}
-                  className="bg-[#0a0e1a] border border-[#1f2b3e] rounded-xl p-3.5 flex items-center justify-between gap-3.5 hover:border-[#c9a84c]/20 transition-all">
+                  className="flex flex-col gap-3 rounded-xl border border-[#1f2b3e] bg-[#0a0e1a] p-3.5 transition-all hover:border-[#c9a84c]/20 sm:flex-row sm:items-center sm:justify-between sm:gap-3.5">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-9 h-9 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center shrink-0">
                       {isUploading ? (
@@ -818,7 +818,7 @@ export default function MaterialsBank() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
                     {!isUploading ? (
                       <>
                         <button onClick={() => savePendingFile(pending.id)}
@@ -827,7 +827,7 @@ export default function MaterialsBank() {
                           {isError ? "Retry" : "Save"}
                         </button>
                         <button onClick={() => setPendingFiles(prev => prev.filter(p => p.id !== pending.id))}
-                          className="w-7 h-7 rounded-lg border border-[#1f2b3e] text-[#7a8194] hover:text-white flex items-center justify-center transition-colors">
+                          className="phone-tap flex h-9 w-9 items-center justify-center rounded-lg border border-[#1f2b3e] text-[#7a8194] transition-colors hover:text-white sm:h-7 sm:w-7">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </>
@@ -854,10 +854,10 @@ export default function MaterialsBank() {
           <p className="text-[#7a8194]/60 text-sm mt-1">Upload a file or save a link to get started</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(item => (
             <div key={item.id}
-              className="bg-[#111827] border border-[#1f2b3e] hover:border-[#c9a84c]/30 rounded-2xl overflow-hidden transition-all group flex flex-col cursor-pointer"
+              className="phone-card group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-[#1f2b3e] bg-[#111827] transition-all hover:border-[#c9a84c]/30"
               onClick={() => setPreview(item)}
             >
               {/* Image thumbnail */}

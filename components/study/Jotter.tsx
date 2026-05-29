@@ -99,14 +99,14 @@ export default function Jotter() {
   }
 
   return (
-    <div className="flex gap-0 h-[calc(100vh-220px)] min-h-[520px] rounded-2xl border border-[#1f2b3e] overflow-hidden md:h-[calc(100vh-280px)] md:min-h-[540px]">
+    <div className="phone-card flex h-[calc(100svh-210px)] min-h-[460px] gap-0 overflow-hidden rounded-[1.35rem] border border-[#1f2b3e] md:h-[calc(100vh-280px)] md:min-h-[540px] md:rounded-2xl">
       {/* Sidebar - note list */}
-      <div className={`w-full md:w-72 shrink-0 flex flex-col bg-[#080c16] border-r border-[#1f2b3e] ${activeId ? "hidden md:flex" : "flex"}`}>
+      <div className={`flex w-full shrink-0 flex-col border-r border-[#1f2b3e] bg-[#080c16] md:w-72 ${activeId ? "hidden md:flex" : "flex"}`}>
         <div className="p-4 border-b border-[#1f2b3e] flex items-center justify-between">
           <span className="font-bold text-white">Notes</span>
           <button
             onClick={newNote}
-            className="w-8 h-8 rounded-lg bg-[#c9a84c]/20 hover:bg-[#c9a84c]/30 text-[#c9a84c] flex items-center justify-center transition-colors"
+            className="phone-tap flex h-10 w-10 items-center justify-center rounded-xl bg-[#c9a84c]/20 text-[#c9a84c] transition-colors hover:bg-[#c9a84c]/30 md:h-8 md:w-8 md:rounded-lg"
             title="New note"
           >
             <Plus className="w-4 h-4" />
@@ -134,7 +134,7 @@ export default function Jotter() {
               tabIndex={0}
               onClick={() => setActiveId(note.id)}
               onKeyDown={e => { if (e.key === "Enter" || e.key === " ") setActiveId(note.id); }}
-              className={`w-full text-left p-3 rounded-xl transition-all group relative cursor-pointer select-none ${
+              className={`phone-tap group relative w-full cursor-pointer select-none rounded-2xl p-3 text-left transition-all md:rounded-xl ${
                 note.id === activeId
                   ? "bg-[#c9a84c]/10 border border-[#c9a84c]/25"
                   : "hover:bg-[#111827] border border-transparent"
@@ -159,11 +159,11 @@ export default function Jotter() {
       <div className={`flex-1 flex flex-col bg-[#0a0e1a] ${activeId ? "flex" : "hidden md:flex"}`}>
         {activeNote ? (
           <>
-            <div className="px-4 md:px-8 pt-4 md:pt-8 pb-4 border-b border-[#1f2b3e] flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 border-b border-[#1f2b3e] px-4 pb-4 pt-4 md:gap-4 md:px-8 md:pt-8">
               {/* Back button on mobile only */}
               <button
                 onClick={() => setActiveId(null)}
-                className="md:hidden p-1.5 rounded-lg bg-[#111827] border border-[#1f2b3e] text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
+                className="phone-tap rounded-xl border border-[#1f2b3e] bg-[#111827] px-2 text-[#c9a84c] transition-colors hover:bg-[#c9a84c]/10 md:hidden"
                 title="Back to notes list"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -172,7 +172,7 @@ export default function Jotter() {
               <input
                 value={activeNote.title}
                 onChange={e => updateActive("title", e.target.value)}
-                className="flex-1 bg-transparent text-xl md:text-2xl font-bold text-white focus:outline-none placeholder:text-[#7a8194]/40"
+                className="min-w-0 flex-1 bg-transparent text-lg font-bold text-white placeholder:text-[#7a8194]/40 focus:outline-none md:text-2xl"
                 placeholder="Note title..."
               />
               <div className="flex items-center gap-2 text-xs text-[#7a8194] shrink-0">
@@ -188,11 +188,11 @@ export default function Jotter() {
               value={activeNote.content}
               onChange={e => updateActive("content", e.target.value)}
               placeholder="Start typing your notes... Ideas, summaries, plans — anything goes."
-              className="flex-1 w-full px-4 md:px-8 py-4 md:py-6 bg-transparent text-[15px] md:text-[16px] leading-relaxed text-[#d4d8e0] focus:outline-none resize-none placeholder:text-[#7a8194]/30 font-mono"
+              className="w-full flex-1 resize-none bg-transparent px-4 py-4 font-mono text-[15px] leading-7 text-[#d4d8e0] placeholder:text-[#7a8194]/30 focus:outline-none md:px-8 md:py-6 md:text-[16px]"
             />
-            <div className="px-4 md:px-8 py-3 border-t border-[#1f2b3e] flex items-center justify-between text-[11px] md:text-xs text-[#7a8194]">
+            <div className="flex items-center justify-between gap-3 border-t border-[#1f2b3e] px-4 py-3 text-[11px] text-[#7a8194] md:px-8 md:text-xs">
               <span>{activeNote.content.split(/\s+/).filter(Boolean).length} words · {activeNote.content.length} chars</span>
-              <span>Auto-saved to browser</span>
+              <span className="hidden sm:inline">Auto-saved to browser</span>
             </div>
           </>
         ) : (

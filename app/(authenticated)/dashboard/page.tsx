@@ -79,23 +79,23 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6 sm:gap-8 max-w-6xl mx-auto w-full p-0 sm:p-2">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 pb-8 sm:gap-8 sm:p-2">
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Hey {name}</h1>
-        <p className="text-lg text-muted-foreground">Here&apos;s what&apos;s happening with your learning.</p>
+        <h1 className="mb-2 text-[2rem] font-bold leading-tight tracking-tight md:text-4xl">Hey {name}</h1>
+        <p className="text-base leading-7 text-muted-foreground sm:text-lg">Here&apos;s what&apos;s happening with your learning.</p>
       </div>
 
       {/* Stat Cards */}
-      <div className="grid gap-5 grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {statCards.map((s) => (
-          <Card key={s.label} className="bg-[#111827]/60 border-[#c9a84c]/20 hover:border-[#c9a84c]/40 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2 p-4 sm:p-6">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{s.label}</CardTitle>
-              <img src={s.icon} alt={s.label} className="h-7 w-7 object-contain" />
+          <Card key={s.label} className="phone-card border-[#c9a84c]/20 bg-[#111827]/60 transition-colors hover:border-[#c9a84c]/40">
+            <CardHeader className="flex flex-row items-center justify-between gap-2 p-3.5 pb-2 sm:p-6 sm:pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">{s.label}</CardTitle>
+              <img src={s.icon} alt={s.label} className="h-6 w-6 object-contain sm:h-7 sm:w-7" />
             </CardHeader>
-            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
-              <div className="text-2xl sm:text-4xl font-bold">{s.value}</div>
-              <p className="text-sm text-muted-foreground mt-1">{s.sub}</p>
+            <CardContent className="p-3.5 pt-0 sm:p-6 sm:pt-0">
+              <div className="text-[1.55rem] font-bold leading-tight sm:text-4xl">{s.value}</div>
+              <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{s.sub}</p>
             </CardContent>
           </Card>
         ))}
@@ -104,17 +104,17 @@ export default function DashboardPage() {
       {/* Continue Learning */}
       <div className="space-y-4 mt-2">
         <h2 className="text-2xl font-bold tracking-tight">Continue Learning</h2>
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a0e1a] via-[#0e1525] to-[#111827] border border-[#c9a84c]/25 p-5 sm:p-8 md:p-10 shadow-2xl">
+        <div className="phone-card relative overflow-hidden rounded-[1.35rem] border border-[#c9a84c]/25 bg-gradient-to-r from-[#0a0e1a] via-[#0e1525] to-[#111827] p-5 shadow-2xl sm:rounded-2xl sm:p-8 md:p-10">
           <div className="absolute top-0 right-0 bottom-0 w-1/2 overflow-hidden pointer-events-none opacity-60">
             <div className="absolute right-[-10%] top-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_rgba(201,168,76,0.12),_transparent_60%)]" />
             <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-20">
               <img src="/icon-brain.png" alt="" className="w-96 h-96 object-contain opacity-40" />
             </div>
           </div>
-          <div className="relative z-10 flex flex-col justify-center max-w-lg min-h-[160px] gap-6">
+          <div className="relative z-10 flex min-h-[160px] max-w-lg flex-col justify-center gap-5 sm:gap-6">
             <div>
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{activeCourse?.title || "Start your first lesson"}</h3>
-              <p className="text-base md:text-lg text-white/70">{activeCourse?.moduleTitle || "Your next lesson will appear here as soon as you begin."}</p>
+              <h3 className="mb-2 text-[1.65rem] font-bold leading-tight text-white md:text-3xl">{activeCourse?.title || "Start your first lesson"}</h3>
+              <p className="text-sm leading-6 text-white/70 sm:text-base md:text-lg">{activeCourse?.moduleTitle || "Your next lesson will appear here as soon as you begin."}</p>
             </div>
             <div className="flex items-center gap-3 sm:gap-4 max-w-sm">
               <Progress value={overallProgress} className="h-3 flex-1 bg-black/40 [&>div]:bg-[#c9a84c]" />
@@ -136,19 +136,19 @@ export default function DashboardPage() {
       </div>
 
       {/* Two-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6 pb-12">
+      <div className="mt-4 grid grid-cols-1 gap-6 pb-4 sm:mt-6 sm:gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-8">
           <section className="space-y-4">
-            <h2 className="text-xl font-bold tracking-tight text-white flex items-center justify-between">
+              <h2 className="flex items-center justify-between text-lg font-bold tracking-tight text-white sm:text-xl">
               Your Study Space <Link href="/study-space" className="text-[#c9a84c] text-sm font-semibold hover:underline">Open All →</Link>
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
               {[
                 { href: "/study-space", label: "My Jotter", desc: "Write fast notes.", icon: "/icon-book.png", from: "from-[#1a1530]" },
                 { href: "/study-space", label: "Materials", desc: "Saved PDFs & Links.", icon: "/icon-bookmark.png", from: "from-[#151a30]" },
                 { href: "/study-space", label: "AI Helper", desc: "Ask simple questions.", icon: "/icon-brain.png", from: "from-[#101a25]" },
               ].map((item) => (
-                <Link key={item.label} href={item.href} className={`bg-gradient-to-br ${item.from} to-black/40 border border-[#c9a84c]/20 hover:border-[#c9a84c]/50 p-5 rounded-2xl transition-all hover:scale-[1.02] shadow-[0_5px_15px_rgba(201,168,76,0.05)] group`}>
+                <Link key={item.label} href={item.href} className={`phone-card group rounded-2xl border border-[#c9a84c]/20 bg-gradient-to-br ${item.from} to-black/40 p-5 shadow-[0_5px_15px_rgba(201,168,76,0.05)] transition-all hover:scale-[1.02] hover:border-[#c9a84c]/50`}>
                   <div className="w-12 h-12 rounded-xl overflow-hidden mb-4">
                     <img src={item.icon} alt={item.label} className="w-full h-full object-cover" />
                   </div>
@@ -159,7 +159,7 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <section className="bg-black/60 border border-[#c9a84c]/15 rounded-2xl overflow-hidden shadow-2xl relative p-5 sm:p-8">
+          <section className="phone-card relative overflow-hidden rounded-2xl border border-[#c9a84c]/15 bg-black/60 p-5 shadow-2xl sm:p-8">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/10 blur-[50px] rounded-full pointer-events-none" />
             <div className="relative">
               <div>
@@ -190,7 +190,7 @@ export default function DashboardPage() {
 
         {/* Leaderboard */}
         <div className="space-y-8">
-          <section className="bg-[#111827]/60 border border-[#c9a84c]/15 rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
+          <section className="phone-card flex h-full flex-col overflow-hidden rounded-2xl border border-[#c9a84c]/15 bg-[#111827]/60 shadow-lg">
             <div className="p-5 border-b border-[#1f2b3e] bg-black/20 flex justify-between items-center">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <img src="/icon-star.png" alt="Leaderboard" className="w-6 h-6 object-contain" /> Top Learners
@@ -219,7 +219,7 @@ export default function DashboardPage() {
                   const rankColors = ["text-[#d4b95e]", "text-slate-300", "text-[#a8893a]"];
                   const isMe = myRank === i + 1;
                   return (
-                    <div key={entry.id} className={`flex items-center justify-between p-4 rounded-xl ${isMe ? "bg-[#c9a84c]/10 border border-[#c9a84c]/30" : ""}`}>
+                    <div key={entry.id} className={`flex items-center justify-between gap-3 rounded-xl p-4 ${isMe ? "bg-[#c9a84c]/10 border border-[#c9a84c]/30" : ""}`}>
                       <div className="flex items-center gap-4">
                         <div className={`font-bold w-6 text-center ${rankColors[i] || "text-gray-400"}`}>#{i + 1}</div>
                         <div className="w-10 h-10 rounded-full bg-secondary/80 flex items-center justify-center font-bold text-[13px]">

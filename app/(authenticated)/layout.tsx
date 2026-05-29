@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { Bell, ArrowLeft, Home, BookOpen, Library, Users, Menu } from "lucide-react";
 import { useApp } from "@/lib/app-context";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { FocusProvider } from "@/lib/focus-context";
@@ -23,8 +24,8 @@ function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden bg-[#0d1424]/85 backdrop-blur-xl border border-[#1f2b3e]/60 rounded-2xl p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-      <nav className="flex items-center justify-around px-1">
+    <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-3 right-3 z-40 mx-auto max-w-md md:hidden rounded-[1.35rem] border border-[#c9a84c]/18 bg-[#0b111f]/90 p-1.5 shadow-[0_18px_55px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
+      <nav className="grid grid-cols-5 gap-1">
         {tabs.map((tab) => {
           const isActive = pathname?.startsWith(tab.href) || (pathname === "/dashboard" && tab.href === "/dashboard");
           const Icon = tab.icon;
@@ -32,23 +33,25 @@ function MobileBottomNav() {
             <button
               key={tab.label}
               onClick={() => router.push(tab.href)}
-              className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl transition-all duration-200 ${
+              aria-current={isActive ? "page" : undefined}
+              className={`phone-tap relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 transition-all duration-300 ${
                 isActive
-                  ? "text-[#c9a84c] bg-[#c9a84c]/10 scale-105"
-                  : "text-muted-foreground hover:text-white"
+                  ? "bg-[#c9a84c]/14 text-[#c9a84c] shadow-[inset_0_0_0_1px_rgba(201,168,76,0.14)]"
+                  : "text-[#8a91a4] hover:bg-white/5 hover:text-white"
               }`}
             >
-              <Icon className="h-5 w-5" />
-              <span className="text-[10px] font-medium tracking-wide">{tab.label}</span>
+              {isActive && <span className="absolute top-1 h-1 w-5 rounded-full bg-[#c9a84c]" />}
+              <Icon className="mt-1 h-5 w-5" />
+              <span className="max-w-full truncate text-[10px] font-semibold tracking-wide">{tab.label}</span>
             </button>
           );
         })}
         <button
           onClick={toggleSidebar}
-          className="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl text-muted-foreground hover:text-white transition-all duration-200"
+          className="phone-tap flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[#8a91a4] transition-all duration-300 hover:bg-white/5 hover:text-white"
         >
-          <Menu className="h-5 w-5" />
-          <span className="text-[10px] font-medium tracking-wide">More</span>
+          <Menu className="mt-1 h-5 w-5" />
+          <span className="max-w-full truncate text-[10px] font-semibold tracking-wide">More</span>
         </button>
       </nav>
     </div>
@@ -81,12 +84,11 @@ export default function AuthenticatedLayout({
   return (
     <FocusProvider>
       <div 
-        className="min-h-screen relative w-full overflow-hidden bg-[#070b14]"
+        className="aethel-app-shell relative min-h-screen w-full overflow-hidden bg-[#070b14]"
         style={{
           backgroundImage: "url('/aethel-bg.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundAttachment: "fixed",
         }}
       >
         {/* Dark elegant overlay - matching the 40% opacity of the login screen for beautiful visibility */}
@@ -95,26 +97,38 @@ export default function AuthenticatedLayout({
         <div className="relative z-10 flex min-h-screen w-full">
           <SidebarProvider>
             <AppSidebar />
-            <main className="flex flex-1 flex-col min-h-screen relative overflow-hidden bg-transparent">
+            <main className="relative flex min-h-screen min-w-0 flex-1 flex-col overflow-hidden bg-transparent">
               
               {/* Top Navbar Area (Right Side) */}
-              <header className="sticky top-0 z-10 flex h-16 w-full items-center justify-between border-b border-[#1f2b3e]/40 bg-[#0d1424]/40 backdrop-blur-md px-4 sm:px-6">
-                <div className="flex items-center gap-2">
-                  <SidebarTrigger className="md:hidden" />
+              <header className="sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b border-[#1f2b3e]/45 bg-[#0b111f]/72 px-3 backdrop-blur-xl sm:h-16 sm:px-6 md:bg-[#0d1424]/40">
+                <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
+                  <SidebarTrigger className="phone-tap md:hidden" />
                   <button
                     onClick={() => router.back()}
-                    className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-secondary/50"
+                    className="phone-tap flex items-center gap-1.5 rounded-xl px-2 text-sm text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     <span className="hidden sm:inline">Back</span>
                   </button>
                 </div>
+
+                <Link href="/dashboard" className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2 md:hidden">
+                  <img
+                    src="/aethel-logo.png"
+                    alt="Aethel Solutions"
+                    className="h-8 w-8 object-contain drop-shadow-[0_4px_14px_rgba(201,168,76,0.24)]"
+                  />
+                  <div className="leading-none">
+                    <p className="text-sm font-black tracking-[0.16em] text-[#c9a84c]">Aethel</p>
+                    <p className="mt-0.5 text-[7px] font-bold uppercase tracking-[0.36em] text-[#c9a84c]/70">Solutions</p>
+                  </div>
+                </Link>
                 
-                <div className="flex items-center gap-4">
-                  <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Notifications are coming soon" title="Notifications are coming soon">
+                <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4">
+                  <button className="phone-tap relative rounded-xl p-2 text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground" aria-label="Notifications are coming soon" title="Notifications are coming soon">
                     <Bell className="h-5 w-5" />
                   </button>
-                  <div className="h-8 w-8 rounded-full bg-secondary border border-border flex items-center justify-center cursor-pointer overflow-hidden">
+                  <div className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[#c9a84c]/20 bg-secondary shadow-[0_0_18px_rgba(201,168,76,0.06)] sm:h-9 sm:w-9">
                     {avatar ? (
                       <img src={avatar} alt={name} className="h-full w-full object-cover" />
                     ) : (
@@ -124,7 +138,7 @@ export default function AuthenticatedLayout({
                 </div>
               </header>
 
-              <div className="flex-1 p-4 md:p-8 pb-24 md:pb-8 overflow-y-auto">{children}</div>
+              <div className="safe-bottom-space flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6 md:p-8 md:pb-8">{children}</div>
               <FloatingFocusBubble />
               <MobileBottomNav />
             </main>
@@ -134,4 +148,3 @@ export default function AuthenticatedLayout({
     </FocusProvider>
   );
 }
-
