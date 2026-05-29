@@ -81,8 +81,8 @@ export default function LoginPage() {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ backgroundImage: "url('/aethel-bg.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#070b14" }}>
         <div className="absolute inset-0 bg-[#070b14]/40" />
-        <div className="w-full max-w-md relative z-10">
-          <div className="relative rounded-2xl p-10 text-center shadow-2xl" style={{ background: "linear-gradient(145deg, rgba(14,20,36,0.92), rgba(10,14,26,0.96))", border: "1px solid rgba(201,168,76,0.25)", boxShadow: "0 0 80px rgba(201,168,76,0.06), 0 25px 50px rgba(0,0,0,0.5)" }}>
+      <div className="relative z-10 w-full max-w-md">
+        <div className="relative rounded-2xl p-6 text-center shadow-2xl sm:p-10" style={{ background: "linear-gradient(145deg, rgba(14,20,36,0.92), rgba(10,14,26,0.96))", border: "1px solid rgba(201,168,76,0.25)", boxShadow: "0 0 80px rgba(201,168,76,0.06), 0 25px 50px rgba(0,0,0,0.5)" }}>
             <div className="w-20 h-20 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/30 flex items-center justify-center mx-auto mb-6">
               <Mail className="w-10 h-10 text-[#c9a84c]" />
             </div>
@@ -106,18 +106,18 @@ export default function LoginPage() {
 
   // ── Main auth form ───────────────────────────────────────────
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ backgroundImage: "url('/aethel-bg.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#070b14" }}>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8" style={{ backgroundImage: "url('/aethel-bg.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#070b14" }}>
       <div className="absolute inset-0 bg-[#070b14]/40" />
       <div className="w-full max-w-md relative z-10">
-        <div className="relative rounded-2xl p-8 md:p-10 shadow-2xl" style={{ background: "linear-gradient(145deg, rgba(14,20,36,0.92), rgba(10,14,26,0.96))", border: "1px solid rgba(201,168,76,0.25)", boxShadow: "0 0 80px rgba(201,168,76,0.06), 0 25px 50px rgba(0,0,0,0.5)" }}>
-          <div className="flex justify-center mb-6">
+        <div className="relative rounded-[1.35rem] p-5 shadow-2xl sm:rounded-2xl sm:p-8 md:p-10" style={{ background: "linear-gradient(145deg, rgba(14,20,36,0.92), rgba(10,14,26,0.96))", border: "1px solid rgba(201,168,76,0.25)", boxShadow: "0 0 80px rgba(201,168,76,0.06), 0 25px 50px rgba(0,0,0,0.5)" }}>
+          <div className="mb-5 flex justify-center sm:mb-6">
             <img src="/aethel-logo.png" alt="Aethel Solutions" className="h-24 w-auto object-contain sm:h-32" style={{ filter: "drop-shadow(0 4px 20px rgba(201,168,76,0.3))" }} />
           </div>
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-white tracking-tight">{isSignUp ? "Create Account" : "Welcome back"}</h1>
             <p className="text-sm text-[#7a8194] mt-2">{isSignUp ? "Join Aethel Solutions to start your journey" : "Sign in to continue your learning journey"}</p>
           </div>
-          <form onSubmit={handleAuth} className="space-y-5">
+          <form onSubmit={handleAuth} className="space-y-4 sm:space-y-5">
             {errorMsg && <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium">{errorMsg}</div>}
             {isSignUp && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -163,7 +163,7 @@ export default function LoginPage() {
                 <a href="/privacy" target="_blank" className="text-[#c9a84c] hover:underline">Privacy Policy</a>.
               </p>
             )}
-            <button type="submit" disabled={loading} className="w-full h-12 mt-1 font-semibold text-sm rounded-xl transition-all duration-300 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[#0a0e1a] gold-shimmer hover:shadow-[0_0_30px_rgba(201,168,76,0.3)] hover:scale-[1.01]">
+            <button type="submit" disabled={loading} className="phone-tap mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold text-[#0a0e1a] shadow-lg transition-all duration-300 gold-shimmer hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(201,168,76,0.3)] disabled:cursor-not-allowed disabled:opacity-60">
               {loading ? <div className="h-5 w-5 border-2 border-[#0a0e1a]/30 border-t-[#0a0e1a] rounded-full animate-spin" /> : isSignUp ? "Create Account" : "Sign In"}
             </button>
           </form>

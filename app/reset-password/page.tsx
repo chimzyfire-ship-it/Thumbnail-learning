@@ -91,10 +91,10 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ backgroundImage: "url('/aethel-bg.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#070b14" }}>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8" style={{ backgroundImage: "url('/aethel-bg.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#070b14" }}>
       <div className="absolute inset-0 bg-[#070b14]/45" />
       <div className="w-full max-w-md relative z-10">
-        <div className="relative rounded-2xl p-8 md:p-10 shadow-2xl" style={{ background: "linear-gradient(145deg, rgba(14,20,36,0.94), rgba(10,14,26,0.97))", border: "1px solid rgba(201,168,76,0.25)", boxShadow: "0 0 80px rgba(201,168,76,0.06), 0 25px 50px rgba(0,0,0,0.5)" }}>
+        <div className="relative rounded-[1.35rem] p-5 shadow-2xl sm:rounded-2xl sm:p-8 md:p-10" style={{ background: "linear-gradient(145deg, rgba(14,20,36,0.94), rgba(10,14,26,0.97))", border: "1px solid rgba(201,168,76,0.25)", boxShadow: "0 0 80px rgba(201,168,76,0.06), 0 25px 50px rgba(0,0,0,0.5)" }}>
           <div className="flex justify-center mb-6">
             <img src="/aethel-logo.png" alt="Aethel Solutions" className="h-24 w-auto object-contain" style={{ filter: "drop-shadow(0 4px 20px rgba(201,168,76,0.3))" }} />
           </div>
@@ -112,7 +112,7 @@ function ResetPasswordForm() {
           )}
 
           {status !== "success" ? (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               <div>
                 <label className="block text-xs font-medium text-[#9ca3b4] mb-1.5">New password</label>
                 <div className="relative">
@@ -148,7 +148,7 @@ function ResetPasswordForm() {
               <button
                 type="submit"
                 disabled={status === "checking" || status === "saving"}
-                className="w-full h-12 mt-1 font-semibold text-sm rounded-xl transition-all duration-300 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[#0a0e1a] gold-shimmer hover:shadow-[0_0_30px_rgba(201,168,76,0.3)] hover:scale-[1.01]"
+                className="phone-tap mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold text-[#0a0e1a] shadow-lg transition-all duration-300 gold-shimmer hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(201,168,76,0.3)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {status === "saving" ? "Saving..." : "Save new password"}
               </button>
@@ -157,7 +157,7 @@ function ResetPasswordForm() {
             <button
               type="button"
               onClick={() => router.replace("/login")}
-              className="w-full h-12 font-semibold text-sm rounded-xl text-[#0a0e1a] gold-shimmer transition-all duration-200 hover:scale-[1.01]"
+              className="phone-tap h-12 w-full rounded-xl text-sm font-semibold text-[#0a0e1a] transition-all duration-200 gold-shimmer hover:scale-[1.01]"
             >
               Back to Sign In
             </button>

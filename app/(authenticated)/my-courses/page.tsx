@@ -25,15 +25,15 @@ export default function MyCoursesPage() {
   const inProgress = enrolled.filter(t => !isTopicCompleted(t.id));
 
   return (
-    <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full p-2 pb-20">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-7 pb-8 sm:gap-8 sm:p-2">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">My Courses</h1>
-        <p className="text-muted-foreground">All the topics you have started or completed.</p>
+        <h1 className="mb-2 text-[2rem] font-bold leading-tight tracking-tight sm:text-3xl">My Courses</h1>
+        <p className="text-sm leading-6 text-muted-foreground sm:text-base">All the topics you have started or completed.</p>
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-secondary/30 border-border/50">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
+        <Card className="phone-card border-border/50 bg-secondary/30">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center">
               <BookOpen className="w-6 h-6 text-cyan-400" />
@@ -44,7 +44,7 @@ export default function MyCoursesPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-secondary/30 border-border/50">
+        <Card className="phone-card border-border/50 bg-secondary/30">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
               <Clock className="w-6 h-6 text-blue-400" />
@@ -55,7 +55,7 @@ export default function MyCoursesPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-secondary/30 border-border/50">
+        <Card className="phone-card border-border/50 bg-secondary/30">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center">
               <CheckCircle2 className="w-6 h-6 text-green-500" />
@@ -76,8 +76,8 @@ export default function MyCoursesPage() {
           </h2>
           <div className="space-y-3">
             {inProgress.map(t => (
-              <Card key={t.id} className="bg-secondary/20 border-border/50 hover:border-primary/30 transition-colors">
-                <CardContent className="p-5 flex items-center gap-5">
+              <Card key={t.id} className="phone-card border-border/50 bg-secondary/20 transition-colors hover:border-primary/30">
+                <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-5">
                   <div className="w-12 h-12 rounded-xl bg-secondary border border-border flex items-center justify-center">
                     <span className="text-lg font-bold text-primary">{t.number}</span>
                   </div>
@@ -90,7 +90,7 @@ export default function MyCoursesPage() {
                     </div>
                   </div>
                   <Link href={`/learn/${t.id}`} passHref legacyBehavior>
-                    <Button className="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold gap-2">
+                    <Button className="phone-tap w-full gap-2 bg-cyan-500 font-semibold text-black hover:bg-cyan-400 sm:w-auto">
                       Resume <ChevronRight className="w-4 h-4" />
                     </Button>
                   </Link>
@@ -109,8 +109,8 @@ export default function MyCoursesPage() {
           </h2>
           <div className="space-y-3">
             {completed.map(t => (
-              <Card key={t.id} className="bg-secondary/20 border-border/50 hover:border-green-500/20 transition-colors">
-                <CardContent className="p-5 flex items-center gap-5">
+              <Card key={t.id} className="phone-card border-border/50 bg-secondary/20 transition-colors hover:border-green-500/20">
+                <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-5">
                   <div className="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
                     <CheckCircle2 className="w-6 h-6 text-green-500" />
                   </div>
@@ -119,7 +119,7 @@ export default function MyCoursesPage() {
                     <p className="text-xs text-muted-foreground mt-0.5">{t.moduleName}</p>
                   </div>
                   <Link href={`/learn/${t.id}`} passHref legacyBehavior>
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="phone-tap w-full gap-2 sm:w-auto">
                       Review <ChevronRight className="w-4 h-4" />
                     </Button>
                   </Link>
@@ -131,12 +131,12 @@ export default function MyCoursesPage() {
       )}
 
       {enrolled.length === 0 && (
-        <div className="text-center py-20">
+        <div className="py-16 text-center sm:py-20">
           <BookOpen className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-white mb-2">No courses yet</h3>
           <p className="text-muted-foreground mb-6">Start your learning journey by exploring our courses.</p>
           <Link href="/courses" passHref legacyBehavior>
-            <Button className="bg-primary hover:bg-primary/80 text-primary-foreground font-bold">
+            <Button className="phone-tap bg-primary font-bold text-primary-foreground hover:bg-primary/80">
               Browse Courses
             </Button>
           </Link>

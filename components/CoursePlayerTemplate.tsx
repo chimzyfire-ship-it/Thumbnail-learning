@@ -155,12 +155,12 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
 
   return (
     // Split-Screen Magic: 50% Video+Progress / 50% Notes+Lessons on Desktop (xl)
-    <div className="flex flex-col xl:flex-row gap-6 xl:gap-8 w-full">
+    <div className="flex w-full flex-col gap-5 sm:gap-6 xl:flex-row xl:gap-8">
 
       {/* ═══ MODULE COMPLETION CELEBRATION ═══ */}
       {moduleJustCompleted && completedModuleTitle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-500">
-          <div className="relative mx-3 max-w-md w-full bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0d1420] border border-[#c9a84c]/40 rounded-3xl p-6 text-center shadow-[0_0_80px_rgba(201,168,76,0.25)] animate-in zoom-in-95 duration-500 sm:mx-4 sm:p-10">
+          <div className="relative mx-3 w-full max-w-md rounded-3xl border border-[#c9a84c]/40 bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0d1420] p-6 text-center shadow-[0_0_80px_rgba(201,168,76,0.25)] animate-in zoom-in-95 duration-500 sm:mx-4 sm:p-10">
             {/* Dismiss button */}
             <button
               onClick={clearModuleCompletion}
@@ -205,16 +205,16 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
       )}
       
       {/* ═══ LEFT PANE: Video Container (50%) ═══ */}
-      <div className="w-full xl:w-1/2 flex flex-col gap-6 min-w-0">
+      <div className="flex min-w-0 w-full flex-col gap-5 sm:gap-6 xl:w-1/2">
         
         {/* Title Block */}
-        <div className="px-1 pt-2">
-          <p className="text-sm font-semibold text-cyan-400/80 uppercase tracking-widest mb-1">{activeLesson.moduleTitle}</p>
-          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{activeLesson.title}</h1>
+        <div className="px-0.5 pt-1 sm:px-1 sm:pt-2">
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400/80 sm:text-sm">{activeLesson.moduleTitle}</p>
+          <h1 className="text-[1.65rem] font-extrabold leading-tight tracking-tight text-white sm:text-3xl">{activeLesson.title}</h1>
         </div>
 
         {/* Video Player */}
-        <div className="w-full aspect-video rounded-2xl flex-shrink-0 overflow-hidden bg-black border border-border/50 shadow-2xl relative">
+        <div className="phone-card relative aspect-video w-full flex-shrink-0 overflow-hidden rounded-[1.35rem] border border-border/50 bg-black shadow-2xl sm:rounded-2xl">
           {hasVideo ? (
             <iframe
               src={activeLesson.videoUrl}
@@ -224,35 +224,35 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
               allowFullScreen
             />
           ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.16),transparent_45%),linear-gradient(180deg,#06080f_0%,#0a0e1a_100%)] px-8 text-center">
-              <MonitorPlay className="h-12 w-12 text-primary/80" />
-              <h3 className="mt-4 text-xl font-bold text-white">Course video coming soon</h3>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.16),transparent_45%),linear-gradient(180deg,#06080f_0%,#0a0e1a_100%)] px-5 text-center sm:px-8">
+              <MonitorPlay className="h-10 w-10 text-primary/80 sm:h-12 sm:w-12" />
+              <h3 className="mt-3 text-lg font-bold text-white sm:mt-4 sm:text-xl">Course video coming soon</h3>
+              <p className="mt-2 max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm">
                 This lesson is ready for its own course video. Once a YouTube video is assigned to this lesson, learners will watch it right here in this player.
               </p>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between pb-2 border-b border-border/30">
-          <div className="text-lg font-bold">Your Progress</div>
+        <div className="flex items-center justify-between gap-3 border-b border-border/30 pb-2">
+          <div className="text-base font-bold sm:text-lg">Your Progress</div>
           {completed || justCompleted ? (
-            <div className="flex items-center gap-2 text-green-400 font-bold bg-green-500/10 px-3 py-1 rounded-full text-sm">
+            <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400 sm:text-sm">
               <CheckCircle2 className="w-4 h-4" /> Lesson Complete
             </div>
           ) : (
-            <div className="text-sm font-semibold text-muted-foreground">{lessonProgress}% ready</div>
+            <div className="text-xs font-semibold text-muted-foreground sm:text-sm">{lessonProgress}% ready</div>
           )}
         </div>
 
         {/* ── PROGRESS TRACKER CARD ── */}
         {!completed && !justCompleted && (
-          <div className="bg-secondary/10 rounded-2xl border border-border/50 p-6 space-y-5">
-            <div className="flex items-center gap-2 text-[15px] font-semibold text-cyan-300">
+          <div className="phone-card space-y-4 rounded-[1.35rem] border border-border/50 bg-secondary/10 p-4 sm:space-y-5 sm:rounded-2xl sm:p-6">
+            <div className="flex items-center gap-2 text-sm font-semibold text-cyan-300 sm:text-[15px]">
               <Sparkles className="w-5 h-5" /> Let&apos;s earn those 50 XP!
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-              <div className={`flex flex-col gap-2 p-4 rounded-xl border transition-colors ${videoOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
+              <div className={`flex min-h-[74px] flex-col gap-2 rounded-2xl border p-4 transition-colors sm:rounded-xl ${videoOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
                 <div className="flex items-center gap-2">
                   <MonitorPlay className={`w-5 h-5 shrink-0 ${videoOk ? "text-green-400" : "text-muted-foreground"}`} />
                   <p className={`text-sm font-bold ${videoOk ? "text-green-400" : ""}`}>
@@ -264,7 +264,7 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
                 </p>
               </div>
 
-              <div className={`flex flex-col gap-2 p-4 rounded-xl border transition-colors ${notesOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
+              <div className={`flex min-h-[74px] flex-col gap-2 rounded-2xl border p-4 transition-colors sm:rounded-xl ${notesOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
                 <div className="flex items-center gap-2">
                   <BookOpen className={`w-5 h-5 shrink-0 ${notesOk ? "text-green-400" : "text-muted-foreground"}`} />
                   <p className={`text-sm font-bold ${notesOk ? "text-green-400" : ""}`}>{notesOk ? "Notes Read" : "Read Notes"}</p>
@@ -272,7 +272,7 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
                 <p className="text-xs font-medium text-muted-foreground">{notesOk ? "Done" : "Click 'Lab Notes' Tab"}</p>
               </div>
 
-              <div className={`flex flex-col gap-2 p-4 rounded-xl border transition-colors ${pageOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
+              <div className={`flex min-h-[74px] flex-col gap-2 rounded-2xl border p-4 transition-colors sm:rounded-xl ${pageOk ? "bg-green-500/10 border-green-500/30" : "bg-black/30 border-border/40"}`}>
                 <div className="flex items-center gap-2">
                   <Clock className={`w-5 h-5 shrink-0 ${pageOk ? "text-green-400" : "text-muted-foreground"}`} />
                   <p className={`text-sm font-bold ${pageOk ? "text-green-400" : ""}`}>{pageOk ? "Time Met" : "Study Time"}</p>
@@ -281,7 +281,7 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
               </div>
             </div>
 
-            <div className="h-3 bg-black/40 rounded-full overflow-hidden border border-border/20">
+            <div className="h-3 overflow-hidden rounded-full border border-border/20 bg-black/40">
               <div
                 className="h-full bg-gradient-to-r from-cyan-500 to-teal-300 transition-all duration-700 ease-out"
                 style={{ width: `${(conditionsMet / 3) * 100}%` }}
@@ -292,31 +292,31 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
       </div>
 
       {/* ═══ RIGHT PANE: Tabbed Area (50%) ═══ */}
-      <div className="w-full xl:w-1/2 flex flex-col bg-secondary/5 rounded-2xl border border-border/50 xl:sticky xl:top-6 xl:h-[calc(100vh-8rem)] overflow-hidden shadow-2xl">
+      <div className="phone-card flex w-full flex-col overflow-hidden rounded-[1.35rem] border border-border/50 bg-secondary/5 shadow-2xl sm:rounded-2xl xl:sticky xl:top-6 xl:h-[calc(100vh-8rem)] xl:w-1/2">
         
         {/* Thick, Beautiful Tab Headers */}
-        <div className="flex p-1.5 sm:p-2 bg-black/40 border-b border-border/40 shrink-0">
+        <div className="flex shrink-0 border-b border-border/40 bg-black/40 p-1.5 sm:p-2">
           <button
             onClick={() => setActiveTab("notes")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-xl font-bold transition-all duration-300 sm:py-4 sm:px-4 ${
+            className={`phone-tap flex flex-1 items-center justify-center gap-2 rounded-2xl px-2 py-3 font-bold transition-all duration-300 sm:rounded-xl sm:px-4 sm:py-4 ${
               activeTab === "notes"
                 ? "bg-gradient-to-br from-cyan-900/60 to-primary/30 text-cyan-300 shadow-lg border border-cyan-500/30 scale-[1.02]"
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
             }`}
           >
-            <FileText className={`w-5 h-5 ${activeTab === "notes" ? "text-cyan-400" : ""}`} />
+            <FileText className={`h-4 w-4 sm:h-5 sm:w-5 ${activeTab === "notes" ? "text-cyan-400" : ""}`} />
             <span className="text-sm sm:text-[15px]">Lab Notes</span>
           </button>
           
           <button
             onClick={() => setActiveTab("lessons")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-xl font-bold transition-all duration-300 sm:py-4 sm:px-4 ${
+            className={`phone-tap flex flex-1 items-center justify-center gap-2 rounded-2xl px-2 py-3 font-bold transition-all duration-300 sm:rounded-xl sm:px-4 sm:py-4 ${
               activeTab === "lessons"
                 ? "bg-gradient-to-br from-cyan-900/60 to-primary/30 text-cyan-300 shadow-lg border border-cyan-500/30 scale-[1.02]"
                 : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
             }`}
           >
-            <List className={`w-5 h-5 ${activeTab === "lessons" ? "text-cyan-400" : ""}`} />
+            <List className={`h-4 w-4 sm:h-5 sm:w-5 ${activeTab === "lessons" ? "text-cyan-400" : ""}`} />
             <span className="text-sm sm:text-[15px]">Module Lessons</span>
           </button>
         </div>
@@ -326,14 +326,14 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
           
           {/* LAB NOTES VIEW */}
           {activeTab === "notes" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out p-4 sm:p-6 md:p-10 lg:p-12">
-              <div className="prose prose-invert prose-base sm:prose-lg lg:prose-xl xl:prose-2xl max-w-none text-gray-300 prose-teal 
+            <div className="p-4 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out sm:p-6 md:p-10 lg:p-12">
+              <div className="prose prose-invert prose-sm max-w-none text-gray-300 prose-teal sm:prose-lg lg:prose-xl xl:prose-2xl
                 prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
                 prose-strong:text-cyan-300 prose-a:text-cyan-400 
                 prose-code:text-cyan-300 prose-code:bg-black/60 prose-code:px-2 prose-code:py-1 prose-code:rounded-lg 
                 prose-blockquote:border-l-4 prose-blockquote:border-cyan-500 prose-blockquote:pl-6 prose-blockquote:text-gray-400 prose-blockquote:italic
                 prose-th:text-primary prose-td:text-gray-300 prose-table:border-collapse prose-th:border prose-th:border-border prose-th:p-4 prose-td:border prose-td:border-border prose-td:p-4 
-                prose-p:leading-relaxed prose-li:leading-relaxed"
+                prose-p:leading-7 prose-li:leading-7 sm:prose-p:leading-relaxed sm:prose-li:leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: activeLesson.cheatSheetHtml }}
               />
               <div className="h-20 w-full" /> {/* Bottom padding */}
@@ -343,11 +343,11 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
           {/* MODULE LESSONS VIEW */}
           {activeTab === "lessons" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out flex flex-col h-full bg-black/20">
-              <div className="p-6 border-b border-border/40 bg-secondary/10 sticky top-0 z-10 backdrop-blur-xl">
-                <h3 className="font-extrabold text-xl">Module Curriculum</h3>
+              <div className="sticky top-0 z-10 border-b border-border/40 bg-secondary/10 p-4 backdrop-blur-xl sm:p-6">
+                <h3 className="text-lg font-extrabold sm:text-xl">Module Curriculum</h3>
                 <p className="text-sm text-cyan-400/80 font-medium mt-1">{activeLesson.moduleTitle}</p>
               </div>
-              <div className="p-4 space-y-2">
+              <div className="space-y-2 p-3 sm:p-4">
                 {moduleLessons.map((lesson) => {
                   const isActive = lesson.id === activeLesson.id;
                   const isDone = isTopicCompleted(lesson.id);
@@ -355,15 +355,15 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
                     <Link
                       key={lesson.id}
                       href={getHref(lesson)}
-                      className={`block p-4 md:p-5 rounded-2xl transition-all duration-200 border ${
+                      className={`block rounded-2xl border p-4 transition-all duration-200 md:p-5 ${
                         isActive
                           ? "bg-gradient-to-r from-cyan-900/30 to-transparent border-cyan-500/40 shadow-sm outline outline-1 outline-cyan-500/10"
                           : "bg-secondary/5 hover:bg-secondary/30 border-transparent hover:border-white/5"
                       }`}
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4">
                         <div
-                          className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-inner ${
+                          className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold shadow-inner ${
                             isDone
                               ? "bg-green-500/20 text-green-400 border border-green-500/30"
                               : isActive
@@ -380,7 +380,7 @@ export function CoursePlayerTemplate({ activeLesson, moduleLessons, linkPrefix =
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className={`text-base font-bold truncate ${isActive ? "text-cyan-100" : "text-gray-300"}`}>
+                          <p className={`truncate text-sm font-bold sm:text-base ${isActive ? "text-cyan-100" : "text-gray-300"}`}>
                             {lesson.title}
                           </p>
                           <div className="flex items-center mt-1">

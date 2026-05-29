@@ -44,12 +44,12 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 max-w-6xl mx-auto w-full p-0 sm:p-2 pb-20">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 pb-8 sm:p-2 lg:flex-row lg:gap-8">
       
       {/* Settings Sidebar */}
       <div className="w-full lg:w-72 lg:flex-shrink-0">
-        <h1 className="text-3xl font-bold tracking-tight mb-6">{t("settings.title", lang)}</h1>
-        <nav className="space-y-1">
+        <h1 className="mb-4 text-[2rem] font-bold leading-tight tracking-tight sm:mb-6">{t("settings.title", lang)}</h1>
+        <nav className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:block lg:space-y-1">
           {settingsSections.map((section) => {
             const Icon = section.icon;
             const isActive = activeSection === section.id;
@@ -57,7 +57,7 @@ export default function SettingsPage() {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                className={`phone-tap flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all lg:rounded-xl ${
                   isActive
                     ? "bg-primary/10 text-primary border border-primary/20"
                     : "text-muted-foreground hover:bg-secondary/50 border border-transparent"
@@ -70,10 +70,10 @@ export default function SettingsPage() {
             );
           })}
 
-          <div className="pt-4 mt-4 border-t border-border/50">
+          <div className="mt-2 border-t border-border/50 pt-4 sm:col-span-3 lg:mt-4">
             <a
               href="/support"
-              className="mb-2 flex w-full items-center gap-3 rounded-xl border border-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50"
+              className="phone-tap mb-2 flex w-full items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 lg:rounded-xl"
             >
               <LifeBuoy className="w-4 h-4" />
               Help & Support
@@ -81,7 +81,7 @@ export default function SettingsPage() {
             <button
               onClick={handleLogOut}
               disabled={loggingOut}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all border border-transparent disabled:opacity-60"
+              className="phone-tap flex w-full items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500/10 disabled:opacity-60 lg:rounded-xl"
             >
               <LogOut className="w-4 h-4" />
               {loggingOut ? "Signing out..." : t("settings.logOut", lang)}
@@ -91,7 +91,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         {activeSection === "profile"       && <ProfileSection />}
         {activeSection === "account"       && <AccountSection />}
         {activeSection === "notifications" && <NotificationsSection />}
@@ -219,24 +219,24 @@ function ProfileSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-1">{t("profile.title", lang)}</h2>
+        <h2 className="mb-1 text-2xl font-bold">{t("profile.title", lang)}</h2>
         <p className="text-muted-foreground text-sm">{t("profile.desc", lang)}</p>
       </div>
 
-      <Card className="bg-secondary/20 border-border/50">
-        <CardContent className="p-6 space-y-6">
+      <Card className="phone-card border-border/50 bg-secondary/20">
+        <CardContent className="space-y-6 p-4 sm:p-6">
           {/* Avatar */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-            <div className="w-20 h-20 rounded-full bg-secondary border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary/30 bg-secondary">
               {avatar ? (
                 <img src={avatar} alt={fullName} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-2xl font-bold text-primary">{init}</span>
               )}
             </div>
-            <div>
+            <div className="w-full sm:w-auto">
               <input type="file" accept="image/png, image/jpeg, image/gif" id="avatarUpload" className="hidden" onChange={handleImageUpload} />
-              <Button variant="outline" size="sm" onClick={() => document.getElementById('avatarUpload')?.click()}>
+              <Button variant="outline" size="sm" onClick={() => document.getElementById('avatarUpload')?.click()} className="phone-tap w-full sm:w-auto">
                 {t("profile.avatar", lang) || "Change Picture"}
               </Button>
               <p className="text-xs text-muted-foreground mt-2">{t("profile.avatarHint", lang) || "JPG, PNG or GIF. Max 2MB."}</p>
@@ -275,7 +275,7 @@ function ProfileSection() {
           )}
 
           <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={status === "loading" || status === "saving"} className="bg-primary hover:bg-primary/80 text-primary-foreground font-semibold px-8">
+            <Button onClick={handleSave} disabled={status === "loading" || status === "saving"} className="phone-tap w-full bg-primary px-8 font-semibold text-primary-foreground hover:bg-primary/80 sm:w-auto">
               {status === "saving" ? "Saving..." : status === "success" ? t("profile.saved", lang) : t("profile.save", lang)}
             </Button>
           </div>
@@ -283,7 +283,7 @@ function ProfileSection() {
       </Card>
 
       {/* AI Preferences */}
-      <Card className="bg-secondary/20 border-border/50">
+      <Card className="phone-card border-border/50 bg-secondary/20">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <img src="/icon-brain.png" alt="" className="w-6 h-6 object-contain" /> {t("profile.aiTitle", lang)}
@@ -296,7 +296,7 @@ function ProfileSection() {
               const isSelected = aiLevel === opt.key;
               return (
                 <button key={opt.key} onClick={() => setAiLevel(opt.key)}
-                  className={`p-4 rounded-xl border text-left transition-all ${
+                  className={`phone-tap rounded-2xl border p-4 text-left transition-all md:rounded-xl ${
                     isSelected ? "border-primary bg-primary/10 text-primary" : "border-border/50 bg-secondary/30 text-muted-foreground hover:border-primary/30"
                   }`}>
                   <p className="font-semibold text-sm">{t(opt.labelKey, lang)}</p>
@@ -414,8 +414,8 @@ function AccountSection() {
       </div>
 
       {/* Password Card */}
-      <Card className="bg-secondary/20 border-border/50">
-        <CardContent className="p-6 space-y-4">
+      <Card className="phone-card border-border/50 bg-secondary/20">
+        <CardContent className="space-y-4 p-4 sm:p-6">
           <label className="text-sm font-medium text-muted-foreground">{t("account.changePw", lang)}</label>
           <input type="password" placeholder={t("account.currentPw", lang)} value={currentPw} onChange={(e) => setCurrentPw(e.target.value)}
             className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition" />
@@ -425,19 +425,19 @@ function AccountSection() {
             className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition" />
           {pwStatus === "error" && <p className="text-xs text-red-400">{pwMessage || t("account.pwError", lang)}</p>}
           {pwStatus === "success" && <p className="text-xs text-green-400">{pwMessage || t("account.pwSuccess", lang)}</p>}
-          <Button variant="outline" onClick={handlePasswordUpdate} disabled={pwStatus === "saving" || !email}>
+          <Button variant="outline" onClick={handlePasswordUpdate} disabled={pwStatus === "saving" || !email} className="phone-tap w-full sm:w-auto">
             {pwStatus === "saving" ? "Updating..." : t("account.updatePw", lang)}
           </Button>
         </CardContent>
       </Card>
 
       {/* Preferences: Theme */}
-      <Card className="bg-secondary/20 border-border/50">
-        <CardContent className="p-6 space-y-4">
+      <Card className="phone-card border-border/50 bg-secondary/20">
+        <CardContent className="space-y-4 p-4 sm:p-6">
           <h3 className="font-bold">{t("account.prefs", lang)}</h3>
 
           {/* Dark Mode (Locked) */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-border/30">
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-secondary/30 p-3 sm:rounded-xl">
             <div className="flex items-center gap-3">
               <Moon className="w-4 h-4 text-primary" />
               <div>
@@ -451,7 +451,7 @@ function AccountSection() {
           </div>
 
           {/* Accent Color */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-border/30">
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/30 bg-secondary/30 p-3 sm:rounded-xl">
             <div className="flex items-center gap-3">
               <Palette className="w-4 h-4 text-primary" />
               <div>
@@ -468,8 +468,8 @@ function AccountSection() {
       </Card>
 
       {/* ─── BIG Language Selector ────────────────────────────── */}
-      <Card className="bg-gradient-to-br from-primary/5 to-secondary/20 border-primary/20">
-        <CardContent className="p-6 space-y-5">
+      <Card className="phone-card border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/20">
+        <CardContent className="space-y-5 p-4 sm:p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
               <Languages className="w-5 h-5 text-primary" />
@@ -500,12 +500,12 @@ function AccountSection() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="bg-red-500/5 border-red-500/20">
-        <CardContent className="p-6">
+      <Card className="phone-card border-red-500/20 bg-red-500/5">
+        <CardContent className="p-4 sm:p-6">
           <h3 className="font-bold text-red-400 mb-2">{t("account.danger", lang)}</h3>
           <p className="text-sm text-muted-foreground mb-4">{t("account.deleteDesc", lang)}</p>
           {!showDeleteConfirm ? (
-            <Button variant="outline" className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+            <Button variant="outline" className="phone-tap w-full border-red-500/30 text-red-400 hover:bg-red-500/10 sm:w-auto"
               onClick={() => setShowDeleteConfirm(true)}>
               {t("account.delete", lang)}
             </Button>
@@ -515,12 +515,12 @@ function AccountSection() {
                 <p className="text-xs text-red-300">{deleteMessage}</p>
               )}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button variant="outline" className="border-red-500/50 bg-red-500/20 text-red-300 hover:bg-red-500/30"
+              <Button variant="outline" className="phone-tap w-full border-red-500/50 bg-red-500/20 text-red-300 hover:bg-red-500/30 sm:w-auto"
                 disabled={deleteStatus === "deleting"}
                 onClick={handleDeleteAccount}>
                 {deleteStatus === "deleting" ? "Deleting..." : t("account.confirmDelete", lang)}
               </Button>
-              <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={deleteStatus === "deleting"}>
+              <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={deleteStatus === "deleting"} className="phone-tap w-full sm:w-auto">
                 {t("account.cancel", lang)}
               </Button>
               </div>
@@ -544,8 +544,8 @@ function NotificationsSection() {
         <p className="text-muted-foreground text-sm">Email notifications are not turned on for MVP launch yet.</p>
       </div>
 
-      <Card className="bg-secondary/20 border-border/50">
-        <CardContent className="p-6">
+      <Card className="phone-card border-border/50 bg-secondary/20">
+        <CardContent className="p-4 sm:p-6">
           <div className="rounded-2xl border border-[#c9a84c]/20 bg-[#c9a84c]/5 p-5">
             <h3 className="font-bold text-white">Launch-safe notification setup</h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
